@@ -11,66 +11,108 @@
             background-color: #03050a;
             font-family: Arial, sans-serif;
             color: white;
-            overflow: hidden; /* Prevents scrollbars */
+            overflow: hidden; /* Prevent scrollbars */
         }
         h1 {
             text-align: center;
             padding-top: 20%;
-            position: relative;
-            z-index: 1; /* Ensures the text is above the nodes */
         }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr); /* Adjust number of columns */
-            grid-template-rows: repeat(10, 1fr); /* Adjust number of rows */
-            height: 100vh;
+        canvas {
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 0; /* Ensures grid is below the text */
-        }
-        .node {
-            background-color: rgba(255, 255, 255, 0.2); /* Light nodes */
-            border-radius: 50%;
-            transition: opacity 0.2s ease;
+            z-index: -1; /* Send canvas to back */
         }
     </style>
 </head>
 <body>
     <h1>Welcome to My Website</h1>
-    <div class="grid">
-        <!-- JavaScript will populate nodes here -->
-    </div>
-
+    <canvas id="canvas"></canvas>
+    
     <script>
-        const gridContainer = document.querySelector('.grid');
-        const numNodes = 100; // Total number of nodes
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
 
-        // Create nodes
-        for (let i = 0; i < numNodes; i++) {
-            const node = document.createElement('div');
-            node.className = 'node';
-            gridContainer.appendChild(node);
+        // Set canvas dimensions
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const nodes = [];
+        const nodeCountX = 10; // Number of nodes in x-direction
+        const nodeCountY = 10; // Number of nodes in y-direction
+        const radius = 10; // Radius of the circles
+        const spacing = 100; // Spacing between the circles
+
+        // Create grid of nodes
+        for (let x = 0; x < nodeCountX; x++) {
+            for (let y = 0; y < nodeCountY; y++) {
+                nodes.push({
+                    x: x * spacing + 50,
+                    y: y * spacing + 50,
+                    connected: false
+                });
+            }
         }
 
-        // Mouse move event
-        document.addEventListener('mousemove', (event) => {
-            const { clientX, clientY } = event;
-            const nodes = document.querySelectorAll('.node');
+        // Draw nodes and lines
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            nodes.forEach((node, index) => {
-                const nodeRect = node.getBoundingClientRect();
-                const nodeX = nodeRect.left + nodeRect.width / 2;
-                const nodeY = nodeRect.top + nodeRect.height / 2;
+            // Draw lines between nodes
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    if (nodes[i].connected) {
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
 
-                // Calculate distance from mouse to node
-                const distance = Math.sqrt(Math.pow(clientX - nodeX, 2) + Math.pow(clientY - nodeY, 2));
+            // Draw nodes
+            for (const node of nodes) {
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
 
-                // Set opacity based on distance (closer nodes become more opaque)
-                const maxDistance = 300; // Distance at which nodes become fully transparent
-                const opacity = Math.max(0, 1 - distance / maxDistance);
-                node.style.opacity = opacity;
-            });
+        // Check for mouse proximity to nodes
+        canvas.addEventListener('mousemove', (event) => {
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
+
+            // Reset connections
+            for (const node of nodes) {
+                node.connected = false;
+            }
+
+            // Determine which nodes are connected to the mouse
+            for (const node of nodes) {
+                const dx = mouseX - node.x;
+                const dy = mouseY - node.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 150) { // Connection distance threshold
+                    node.connected = true;
+                }
+            }
+
+            draw();
+        });
+
+        // Initial drawing
+        draw();
+
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            draw();
         });
     </script>
 </body>
