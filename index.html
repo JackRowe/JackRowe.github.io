@@ -33,16 +33,27 @@
             font-family: 'Roboto', sans-serif;
             color: white;
             display: flex;
-            flex-direction: column; /* Stack elements vertically */
             height: 100vh; /* Full height */
-            justify-content: space-between; /* Space out the content and footer */
+        }
+
+        .content {
+            flex-grow: 1; /* Take remaining space */
+            display: flex;
+            flex-direction: column; /* Stack content vertically */
+            justify-content: flex-start; /* Start at the top */
+            padding-bottom: 60px; /* Space for footer */
         }
 
         .footer {
-            background-color: #03050a; /* Match background color */
+            position: absolute; /* Position absolute to stay at the bottom */
+            bottom: 0;
+            left: 0;
+            width: 100%; /* Full width */
+            background-color: rgba(0, 0, 0, 0); /* Transparent black */
             display: flex;
             justify-content: center; /* Center the buttons */
             padding: 10px 0;
+            /*backdrop-filter: blur(5px); Optional: add a blur effect */
         }
 
         .footer a {
@@ -84,9 +95,7 @@
     </style>
 </head>
 <body>
-    <div>
-        <!-- Content can be added here -->
-    </div>
+    
 
     <div class="footer">
         <a href="https://example.com/1" onmouseover="showTooltip(event, 'LinkedIn')" onmouseout="hideTooltip(event)">
