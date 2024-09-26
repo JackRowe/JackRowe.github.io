@@ -44,9 +44,17 @@
         canvas.height = window.innerHeight;
 
         // Create a new node
-        function createNode() {
-            const x = Math.random() < 0.5 ? -nodeSize : canvas.width + nodeSize;
-            const y = Math.random() * canvas.height;
+        function createNode(outsideViewport = false) {
+            let x, y;
+            if (outsideViewport) {
+                // Spawn outside of the viewport
+                x = Math.random() < 0.5 ? -nodeSize : canvas.width + nodeSize;
+                y = Math.random() * canvas.height;
+            } else {
+                // Spawn inside the viewport
+                x = Math.random() * canvas.width;
+                y = Math.random() * canvas.height;
+            }
             const direction = x < 0 ? 1 : -1; // Move towards the screen
             nodes.push({ x, y, direction });
         }
@@ -59,7 +67,7 @@
                 // Check if node is out of the viewport
                 if (node.x < -nodeSize || node.x > canvas.width + nodeSize) {
                     nodes.splice(index, 1); // Remove node
-                    createNode(); // Spawn a new node
+                    createNode(true); // Spawn a new node outside of the viewport
                 }
             });
         }
@@ -102,9 +110,9 @@
             requestAnimationFrame(animate);
         }
 
-        // Initialize
+        // Initialize: create initial nodes within the viewport
         for (let i = 0; i < maxNodes; i++) {
-            createNode();
+            createNode(); // Create nodes within the viewport
         }
 
         animate();
