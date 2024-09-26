@@ -46,31 +46,33 @@
 
         /* Image on the seam */
         .seam-image {
-            position: absolute;
-            bottom: 0; /* Push the image down */
-            left: 25%; /* Position it exactly on the seam */
-            transform: translateX(-50%); /* Center the image horizontally */
+            position: relative; /* Make the container relative so we can overlay elements */
+            bottom: 0;
+            left: 25%;
+            transform: translateX(-50%);
             z-index: 10;
         }
 
         .seam-image img {
-            height: 50vh; /* Set the height to 50% of the viewport height */
-            width: auto; /* Let the width adjust automatically */
-            max-width: none; /* Allow the width to exceed the normal constraints */
+            height: 50vh;
+            width: auto;
+            max-width: none;
+            display: block;
         }
 
-        /* Transparent gradient overlay */
-        .seam-image::before {
+        /* Transparent gradient overlay directly on the image */
+        .seam-image::after {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to top, rgba(255, 255, 255, 0), rgb(255, 255, 255));
-            z-index: 5; /* Below the image but above the background */
+            background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+            z-index: 5; /* Overlay on top of the image */
             pointer-events: none; /* Allows clicks to pass through */
         }
+
 
         /* Background color for visual impact */
         .background {
