@@ -37,8 +37,8 @@
 
         let nodes = [];
         const maxNodes = 50;
-        const nodeSpeed = 1;
-        const nodeSize = 5;
+        const nodeSpeed = 1; // Speed of nodes
+        const nodeSize = 5; // Size of nodes
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -55,17 +55,23 @@
                 x = Math.random() * canvas.width;
                 y = Math.random() * canvas.height;
             }
-            const direction = x < 0 ? 1 : -1; // Move towards the screen
-            nodes.push({ x, y, direction });
+
+            // Set random direction for movement
+            const xDirection = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.5 + 0.5); // Random X direction
+            const yDirection = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.5 + 0.5); // Random Y direction
+
+            nodes.push({ x, y, xDirection, yDirection });
         }
 
         // Update node positions and manage their lifecycle
         function updateNodes() {
             nodes.forEach((node, index) => {
-                node.x += nodeSpeed * node.direction;
+                node.x += node.xDirection * nodeSpeed;
+                node.y += node.yDirection * nodeSpeed;
 
                 // Check if node is out of the viewport
-                if (node.x < -nodeSize || node.x > canvas.width + nodeSize) {
+                if (node.x < -nodeSize || node.x > canvas.width + nodeSize ||
+                    node.y < -nodeSize || node.y > canvas.height + nodeSize) {
                     nodes.splice(index, 1); // Remove node
                     createNode(true); // Spawn a new node outside of the viewport
                 }
