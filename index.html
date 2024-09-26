@@ -38,48 +38,6 @@
             justify-content: space-between; /* Space out the content and footer */
         }
 
-        .container {
-            background-color: #1c1e24;
-            border-radius: 15px;
-            padding: 20px;
-            width: 80%;
-            max-width: 800px;
-            display: flex;
-            align-items: center;
-            margin: auto; /* Center the container */
-        }
-
-        .image-container {
-            flex: 0 0 150px; /* Fixed width for the image container */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .image-container img {
-            width: 100%;
-            height: auto;
-            border-radius: 50%;
-            border: 3px solid white;
-        }
-
-        .content {
-            flex: 1; /* Takes remaining space */
-            margin-left: 20px; /* Space between image and text */
-        }
-
-        h1 {
-            text-align: center;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        p {
-            text-align: center;
-            margin-top: 10px;
-            line-height: 1.5;
-        }
-
         .footer {
             background-color: #03050a; /* Match background color */
             display: flex;
@@ -95,8 +53,8 @@
         }
 
         .footer img {
-            width: 50px; /* Set a smaller fixed width for buttons */
-            height: 50px; /* Set a smaller fixed height for buttons */
+            width: 40px; /* Set a smaller fixed width for buttons */
+            height: 40px; /* Set a smaller fixed height for buttons */
             border-radius: 10%; /* Optional rounded corners */
             transition: transform 0.3s; /* Add hover effect */
         }
@@ -105,57 +63,47 @@
             transform: scale(1.1); /* Slightly enlarge on hover */
         }
 
-        /* Tooltip styling */
         .tooltip {
-            display: none; /* Hidden by default */
-            position: absolute; /* Position it above the button */
-            bottom: 60px; /* Space above the button */
+            position: absolute;
+            bottom: 60px; /* Position above the button */
             left: 50%;
-            transform: translateX(-50%); /* Center it */
-            background-color: rgba(0, 0, 0, 0.8); /* Background color */
-            color: white; /* Text color */
-            padding: 5px 10px; /* Padding */
-            border-radius: 5px; /* Rounded corners */
-            font-size: 12px; /* Font size */
-            white-space: nowrap; /* Prevent line breaks */
-            z-index: 10; /* Ensure it appears above other elements */
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
             opacity: 0; /* Start invisible */
-            transition: opacity 0.5s ease; /* Transition for fading effect */
+            transition: opacity 0.5s ease; /* Fade effect */
+            pointer-events: none; /* Prevent mouse events */
+            white-space: nowrap; /* Prevent text wrapping */
         }
 
-        .tooltip.visible {
-            display: block; /* Make it block when visible */
-            opacity: 1; /* Fade in */
+        .tooltip.show {
+            opacity: 1; /* Make visible */
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="image-container">
-            <img src="https://cdn.discordapp.com/attachments/892815374033227806/1288894463057461259/dc8382f3c5df346921c7052a7b27d16a.png?ex=66f6d802&is=66f58682&hm=4125ab84b443d3ec07732c2d9561d448a2040ea6697297443eb1c7024c9a55f7&" alt="Placeholder Image">
-        </div>
-        <div class="content">
-            <h1>Jack Rowe</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        </div>
+    <div>
+        <!-- Content can be added here -->
     </div>
 
     <div class="footer">
         <a href="https://example.com/1" onmouseover="showTooltip(event, 'LinkedIn')" onmouseout="hideTooltip(event)">
             <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/linkedin-app-white-icon.png" alt="LinkedIn">
-            <span class="tooltip">Button 1</span>
+            <span class="tooltip">LinkedIn</span>
         </a>
         <a href="https://example.com/2" onmouseover="showTooltip(event, 'Github')" onmouseout="hideTooltip(event)">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7cmmOu4xUkNNZlk-qh4r47i9n6R1mLQD-3Q&s" alt="Github">
-            <span class="tooltip">Button 2</span>
+            <span class="tooltip">Github</span>
         </a>
         <a href="https://example.com/3" onmouseover="showTooltip(event, 'Email')" onmouseout="hideTooltip(event)">
             <img src="/images/email.png" alt="Email">
-            <span class="tooltip">Button 3</span>
+            <span class="tooltip">Email</span>
         </a>
         <a href="https://example.com/4" onmouseover="showTooltip(event, 'Resume')" onmouseout="hideTooltip(event)">
             <img src="/images/resume.png" alt="Resume">
-            <span class="tooltip">Button 4</span>
+            <span class="tooltip">Resume</span>
         </a>
     </div>
 
@@ -163,17 +111,12 @@
         function showTooltip(event, text) {
             const tooltip = event.currentTarget.querySelector('.tooltip');
             tooltip.innerText = text; // Set the tooltip text
-            tooltip.classList.add('visible'); // Show the tooltip
-
-            // Hide the tooltip after 1.5 seconds
-            setTimeout(() => {
-                tooltip.classList.remove('visible'); // Fade out
-            }, 1500);
+            tooltip.classList.add('show'); // Show the tooltip
         }
 
         function hideTooltip(event) {
             const tooltip = event.currentTarget.querySelector('.tooltip');
-            tooltip.classList.remove('visible'); // Fade out immediately
+            tooltip.classList.remove('show'); // Hide the tooltip
         }
     </script>
 </body>
