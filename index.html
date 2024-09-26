@@ -23,19 +23,34 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: 
-                url('https://cdn.discordapp.com/attachments/892815374033227806/1287797290097971262/image.png?ex=66f625f0&is=66f4d470&hm=285f45f45eb7a3596af6a245cc5aacb50f8c3ec85a795c11962f35a4a895d22a&') center/cover,
-                url('https://cdn.discordapp.com/attachments/892815374033227806/1287797290097971262/image.png?ex=66f625f0&is=66f4d470&hm=285f45f45eb7a3596af6a245cc5aacb50f8c3ec85a795c11962f35a4a895d22a&') center/cover,
-                url('/https://cdn.discordapp.com/attachments/892815374033227806/1287797290097971262/image.png?ex=66f625f0&is=66f4d470&hm=285f45f45eb7a3596af6a245cc5aacb50f8c3ec85a795c11962f35a4a895d22a&') center/cover;
-            background-repeat: repeat-y;
-            animation: scroll 60s linear infinite;
         }
-        @keyframes scroll {
-            0% { background-position: 0 0, 0 100%, 0 200%; }
-            100% { background-position: 0 -100%, 0 0, 0 100%; }
+        .scroll-strip {
+            position: absolute;
+            width: 300%;
+            height: 25%;
+            background-repeat: repeat-x;
+            animation: scrollHorizontal 60s linear infinite;
+        }
+        .scroll-strip:nth-child(1) {
+            top: 10%;
+            background-image: url('/api/placeholder/800/200');
+        }
+        .scroll-strip:nth-child(2) {
+            top: 40%;
+            background-image: url('/api/placeholder/800/200');
+            animation-duration: 80s;
+        }
+        .scroll-strip:nth-child(3) {
+            top: 70%;
+            background-image: url('/api/placeholder/800/200');
+            animation-duration: 70s;
+        }
+        @keyframes scrollHorizontal {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         .container {
-            background-color: rgba(30, 30, 30, 0.9);
+            background-color: rgba(30, 30, 30, 0.8);
             padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
@@ -43,6 +58,7 @@
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
+            z-index: 1;
         }
         header {
             text-align: center;
@@ -78,7 +94,6 @@
             border-radius: 20px;
             font-size: 0.9rem;
         }
-        /* Scrollbar Styles */
         .container::-webkit-scrollbar {
             width: 10px;
         }
@@ -92,7 +107,11 @@
     </style>
 </head>
 <body>
-    <div class="background"></div>
+    <div class="background">
+        <div class="scroll-strip"></div>
+        <div class="scroll-strip"></div>
+        <div class="scroll-strip"></div>
+    </div>
     <div class="container">
         <header>
             <h1>John Doe</h1>
