@@ -47,15 +47,16 @@
         /* Image on the seam */
         .seam-image {
             position: absolute;
-            bottom: 0; /* Move the image to touch the bottom */
+            bottom: 0; /* Ensure the image touches the bottom */
             left: 25%; /* Position it exactly on the seam */
             transform: translateX(-50%); /* Center the image horizontally */
             z-index: 10;
         }
 
         .seam-image img {
-            height: 80%; /* Set the image height to 80% */
+            height: 100%; /* Set the image height to fill the container */
             width: auto; /* Let the width adjust automatically */
+            max-width: none; /* Allow the width to exceed the normal constraints */
         }
 
         /* Background color for visual impact */
@@ -63,8 +64,8 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: calc(300px * 2); /* Assuming image width is 300px */
-            height: calc(500px * 2); /* Assuming image height is 500px */
+            width: calc(300px * 2); /* Assuming image width is 600px */
+            height: calc(500px * 2); /* Assuming image height is 1000px */
             background-color: #080f1c; /* Same background color */
             z-index: 1; /* Behind everything else */
         }
@@ -76,7 +77,7 @@
 
     <!-- Image at the seam -->
     <div class="seam-image">
-        <img src="https://via.placeholder.com/300x500.png?text=Person+Image" alt="Person with transparent background">
+        <img src="https://via.placeholder.com/600x1000.png?text=Person+Image" alt="Person with transparent background">
     </div>
 </body>
 </html>
