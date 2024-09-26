@@ -32,7 +32,7 @@
 
         /* Dark Mode section (3/4 of the page) */
         .dark-mode {
-            background-color: #203b8c; /* Secondary color (dark) */
+            background-color: #0f0f0f; /* Secondary color (dark) */
             height: 100vh;
             width: 75%; /* 3/4 of the screen */
             float: left;
@@ -41,15 +41,15 @@
         /* Image on the seam */
         .seam-image {
             position: absolute;
-            bottom: 0; /* Make the image flush with the bottom */
+            bottom: 0; /* Move the image to touch the bottom */
             left: 25%; /* Position it exactly on the seam */
-            transform: translateX(-50%); /* Adjust horizontally */
+            transform: translateX(-50%); /* Center the image horizontally */
             z-index: 10;
         }
 
         .seam-image img {
-            height: auto; /* Adjust height automatically */
-            width: 300px; /* Adjust width as per the desired size */
+            height: auto; /* Let the image adjust its height automatically */
+            width: 300px; /* You can adjust the width */
         }
     </style>
 </head>
@@ -59,7 +59,7 @@
 
     <!-- Image at the seam -->
     <div class="seam-image">
-        <img src="https://static.vecteezy.com/system/resources/previews/010/936/900/original/person-standing-and-smiling-free-png.png" alt="Person with transparent background">
+        <img src="https://via.placeholder.com/300x500.png?text=Person+Image" alt="Person with transparent background">
     </div>
 </body>
 </html>
