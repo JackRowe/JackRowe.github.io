@@ -4,17 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>John Doe - Programming Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        h1, h2 {
+            color: #35424a;
+        }
+        section {
+            margin-bottom: 2rem;
+        }
+        .project-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .project {
+            background: #f9f9f9;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0;
+            list-style-type: none;
+        }
+        .skill {
+            background: #e9e9e9;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="container">
+    <div class="container">
+        <header>
             <h1>John Doe</h1>
             <p>Software Developer</p>
-        </div>
-    </header>
+        </header>
 
-    <div class="container">
         <section id="about">
             <h2>About Me</h2>
             <p>I'm a passionate software developer with experience in web development and mobile app creation. I love solving complex problems and building user-friendly applications.</p>
@@ -22,12 +73,18 @@
 
         <section id="skills">
             <h2>Skills</h2>
-            <ul>
-                <li>HTML, CSS, JavaScript</li>
-                <li>React, Vue.js</li>
-                <li>Node.js, Express</li>
-                <li>Python, Django</li>
-                <li>SQL, MongoDB</li>
+            <ul class="skills-list">
+                <li class="skill">HTML</li>
+                <li class="skill">CSS</li>
+                <li class="skill">JavaScript</li>
+                <li class="skill">React</li>
+                <li class="skill">Vue.js</li>
+                <li class="skill">Node.js</li>
+                <li class="skill">Express</li>
+                <li class="skill">Python</li>
+                <li class="skill">Django</li>
+                <li class="skill">SQL</li>
+                <li class="skill">MongoDB</li>
             </ul>
         </section>
 
