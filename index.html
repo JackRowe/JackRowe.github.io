@@ -36,10 +36,7 @@
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         const nodes = [];
-        const mouse = {
-            x: null,
-            y: null
-        };
+        const mouse = { x: null, y: null };
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -105,8 +102,8 @@
         function createNodes() {
             nodes.length = 0;
             const gridSpacing = 50;
-            for (let y = gridSpacing; y < canvas.height; y += gridSpacing) {
-                for (let x = gridSpacing; x < canvas.width; x += gridSpacing) {
+            for (let y = -100; y < canvas.height + 100; y += gridSpacing) { // Spawn outside top
+                for (let x = -100; x < canvas.width + 100; x += gridSpacing) { // Spawn outside left
                     nodes.push(new Node(x, y));
                 }
             }
@@ -129,8 +126,18 @@
             }
         }
 
+        function removeOutOfViewNodes() {
+            for (let i = nodes.length - 1; i >= 0; i--) {
+                if (nodes[i].x < -100 || nodes[i].x > canvas.width + 100 || 
+                    nodes[i].y < -100 || nodes[i].y > canvas.height + 100) {
+                    nodes.splice(i, 1); // Remove node if it's out of view
+                }
+            }
+        }
+
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            removeOutOfViewNodes(); // Check for and remove out of view nodes
             nodes.forEach(node => node.update());
             connectNodes();
             requestAnimationFrame(animate);
