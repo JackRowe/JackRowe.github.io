@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Split Background with Image on Seam</title>
+    <title>Split Background with Topbar</title>
     <style>
         * {
             margin: 0;
@@ -14,6 +14,32 @@
         body, html {
             height: 100%;
             font-family: Arial, sans-serif;
+        }
+
+        /* Topbar styling */
+        .topbar {
+            width: 100%;
+            background-color: #3c69ea; /* Accent color */
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .topbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .topbar a:hover {
+            text-decoration: underline;
         }
 
         /* Container for split sections */
@@ -28,38 +54,31 @@
             height: 100vh;
             width: 25%; /* 1/4 of the screen */
             float: left;
+            padding-top: 70px; /* Account for the topbar */
         }
 
         /* Dark Mode section (3/4 of the page) */
         .dark-mode {
-            background-color: #0f0f0f; /* Secondary color (dark) */
+            background-color: #0f0f0f; /* Dark color */
             height: 100vh;
             width: 75%; /* 3/4 of the screen */
             float: left;
-        }
-
-        /* Image on the seam */
-        .seam-image {
-            position: absolute;
-            bottom: 0; /* Move the image to touch the bottom */
-            left: 25%; /* Position it exactly on the seam */
-            transform: translateX(-50%); /* Center the image horizontally */
-            z-index: 10;
-        }
-
-        .seam-image img {
-            height: auto; /* Let the image adjust its height automatically */
-            width: 300px; /* You can adjust the width */
+            padding-top: 70px; /* Account for the topbar */
         }
     </style>
 </head>
 <body>
-    <div class="split-section primary"></div>
-    <div class="split-section dark-mode"></div>
 
-    <!-- Image at the seam -->
-    <div class="seam-image">
-        <img src="https://via.placeholder.com/300x500.png?text=Person+Image" alt="Person with transparent background">
+    <!-- Topbar with navigation links -->
+    <div class="topbar">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#contact">Contact</a>
     </div>
+
+    <div class="split-section primary" id="home"></div>
+    <div class="split-section dark-mode" id="about"></div>
+
 </body>
 </html>
