@@ -33,15 +33,33 @@
             constructor(x, y) {
                 this.position = { x, y };
                 this.velocity = {
-                    x: (Math.random() - 0.5) * 0.5, // Reduced velocity for slower movement
-                    y: (Math.random() - 0.5) * 0.5
+                    x: 0, // Start with no movement
+                    y: 0
                 };
                 this.radius = 5; // Node size
             }
 
-            update() {
+            update(nodes) {
+                // Move towards nearby nodes
+                nodes.forEach(node => {
+                    if (node !== this) {
+                        const dx = node.position.x - this.position.x;
+                        const dy = node.position.y - this.position.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < 100) { // Only influence nodes within 100px
+                            this.velocity.x += (dx / distance) * 0.1; // Adjust 0.1 to control speed
+                            this.velocity.y += (dy / distance) * 0.1; // Adjust 0.1 to control speed
+                        }
+                    }
+                });
+
+                // Update position based on velocity
                 this.position.x += this.velocity.x;
                 this.position.y += this.velocity.y;
+
+                // Dampen the velocity
+                this.velocity.x *= 0.95; // Adjust for smoother movement
+                this.velocity.y *= 0.95; // Adjust for smoother movement
             }
 
             draw() {
@@ -61,7 +79,7 @@
         }
 
         const nodes = [];
-        const numberOfNodes = 100; // Number of nodes
+        const numberOfNodes = 100;
 
         function spawnNode() {
             const x = Math.random() * canvas.width;
@@ -71,21 +89,17 @@
 
         function connectNodes() {
             for (let i = 0; i < nodes.length; i++) {
-                const currentNode = nodes[i];
-                for (let j = 0; j < nodes.length; j++) {
-                    if (i !== j) {
-                        const otherNode = nodes[j];
-                        const dx = currentNode.position.x - otherNode.position.x;
-                        const dy = currentNode.position.y - otherNode.position.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        if (distance < 100) { // Adjust this value for connection distance
-                            ctx.beginPath();
-                            ctx.moveTo(currentNode.position.x, currentNode.position.y);
-                            ctx.lineTo(otherNode.position.x, otherNode.position.y);
-                            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                            ctx.stroke();
-                            ctx.closePath();
-                        }
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].position.x - nodes[j].position.x;
+                    const dy = nodes[i].position.y - nodes[j].position.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) { // Draw line if within 100px
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].position.x, nodes[i].position.y);
+                        ctx.lineTo(nodes[j].position.x, nodes[j].position.y);
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.stroke();
+                        ctx.closePath();
                     }
                 }
             }
@@ -95,7 +109,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             connectNodes();
             nodes.forEach((node, index) => {
-                node.update();
+                node.update(nodes); // Pass nodes for movement logic
                 node.draw();
                 if (node.isOutOfView()) {
                     nodes.splice(index, 1); // Remove node from array
@@ -105,7 +119,6 @@
             requestAnimationFrame(animate);
         }
 
-        // Spawn initial nodes
         for (let i = 0; i < numberOfNodes; i++) {
             spawnNode();
         }
