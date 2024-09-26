@@ -11,59 +11,65 @@
             background-color: #03050a;
             font-family: Arial, sans-serif;
             color: white;
-            overflow: hidden; /* Prevent scroll bars */
+            overflow: hidden; /* Prevents scrollbars */
         }
         h1 {
             text-align: center;
             padding-top: 20%;
             position: relative;
-            z-index: 1; /* Ensure heading is above the grid */
+            z-index: 1; /* Ensures the text is above the nodes */
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(10, 1fr); /* Adjust the number of columns */
-            grid-template-rows: repeat(10, 1fr); /* Adjust the number of rows */
-            height: 100vh; /* Full height of the viewport */
+            grid-template-columns: repeat(10, 1fr); /* Adjust number of columns */
+            grid-template-rows: repeat(10, 1fr); /* Adjust number of rows */
+            height: 100vh;
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 0; /* Send grid behind the heading */
+            z-index: 0; /* Ensures grid is below the text */
         }
         .node {
-            background-color: rgba(255, 255, 255, 0.1);
-            transition: background-color 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.2); /* Light nodes */
+            border-radius: 50%;
+            transition: opacity 0.2s ease;
         }
     </style>
 </head>
 <body>
     <h1>Welcome to My Website</h1>
-    <div class="grid"></div>
+    <div class="grid">
+        <!-- JavaScript will populate nodes here -->
+    </div>
 
     <script>
-        // Create grid nodes
-        const grid = document.querySelector('.grid');
-        const rows = 10; // Number of rows
-        const cols = 10; // Number of columns
+        const gridContainer = document.querySelector('.grid');
+        const numNodes = 100; // Total number of nodes
 
-        for (let i = 0; i < rows * cols; i++) {
+        // Create nodes
+        for (let i = 0; i < numNodes; i++) {
             const node = document.createElement('div');
             node.className = 'node';
-            grid.appendChild(node);
+            gridContainer.appendChild(node);
         }
 
-        // Change background color on mouse move
+        // Mouse move event
         document.addEventListener('mousemove', (event) => {
-            const x = Math.floor(event.clientX / (window.innerWidth / cols));
-            const y = Math.floor(event.clientY / (window.innerHeight / rows));
-            const index = y * cols + x;
+            const { clientX, clientY } = event;
             const nodes = document.querySelectorAll('.node');
 
-            nodes.forEach((node, i) => {
-                if (i === index) {
-                    node.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
-                } else {
-                    node.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                }
+            nodes.forEach((node, index) => {
+                const nodeRect = node.getBoundingClientRect();
+                const nodeX = nodeRect.left + nodeRect.width / 2;
+                const nodeY = nodeRect.top + nodeRect.height / 2;
+
+                // Calculate distance from mouse to node
+                const distance = Math.sqrt(Math.pow(clientX - nodeX, 2) + Math.pow(clientY - nodeY, 2));
+
+                // Set opacity based on distance (closer nodes become more opaque)
+                const maxDistance = 300; // Distance at which nodes become fully transparent
+                const opacity = Math.max(0, 1 - distance / maxDistance);
+                node.style.opacity = opacity;
             });
         });
     </script>
