@@ -9,16 +9,36 @@
             height: 100%;
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #121212;
+            color: #e0e0e0;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
+        }
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                url('/api/placeholder/800/600') center/cover,
+                url('/api/placeholder/800/600') center/cover,
+                url('/api/placeholder/800/600') center/cover;
+            background-repeat: repeat-y;
+            animation: scroll 60s linear infinite;
+        }
+        @keyframes scroll {
+            0% { background-position: 0 0, 0 100%, 0 200%; }
+            100% { background-position: 0 -100%, 0 0, 0 100%; }
         }
         .container {
-            background-color: white;
+            background-color: rgba(30, 30, 30, 0.9);
             padding: 2rem;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
             max-width: 800px;
             width: 90%;
             max-height: 90vh;
@@ -29,7 +49,7 @@
             margin-bottom: 2rem;
         }
         h1, h2 {
-            color: #35424a;
+            color: #bb86fc;
         }
         section {
             margin-bottom: 2rem;
@@ -39,7 +59,7 @@
             padding: 0;
         }
         .project {
-            background: #f9f9f9;
+            background: rgba(50, 50, 50, 0.5);
             padding: 1rem;
             margin-bottom: 1rem;
             border-radius: 5px;
@@ -52,14 +72,27 @@
             list-style-type: none;
         }
         .skill {
-            background: #e9e9e9;
+            background: #3700b3;
+            color: #e0e0e0;
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.9rem;
         }
+        /* Scrollbar Styles */
+        .container::-webkit-scrollbar {
+            width: 10px;
+        }
+        .container::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+        .container::-webkit-scrollbar-thumb {
+            background: #bb86fc;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
+    <div class="background"></div>
     <div class="container">
         <header>
             <h1>John Doe</h1>
