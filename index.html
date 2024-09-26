@@ -8,62 +8,87 @@
         body {
             margin: 0;
             padding: 0;
+            overflow: hidden; /* Prevent scroll bars */
             background-color: #03050a;
             font-family: Arial, sans-serif;
             color: white;
-            overflow: hidden; /* Prevent scrollbars */
+            height: 100vh; /* Ensure full viewport height */
         }
         h1 {
             text-align: center;
             padding-top: 20%;
+            position: relative; /* Ensure h1 stays on top */
+            z-index: 1; /* Place h1 above canvas */
         }
         canvas {
             position: absolute;
             top: 0;
             left: 0;
-            z-index: -1; /* Send canvas to back */
+            z-index: 0; /* Place canvas below h1 */
         }
     </style>
 </head>
 <body>
     <h1>Welcome to My Website</h1>
     <canvas id="canvas"></canvas>
-    
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
-        // Set canvas dimensions
+        // Resize canvas to full window size
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
         const nodes = [];
-        const nodeCountX = 10; // Number of nodes in x-direction
-        const nodeCountY = 10; // Number of nodes in y-direction
-        const radius = 10; // Radius of the circles
-        const spacing = 100; // Spacing between the circles
+        const nodeCount = 100; // Total number of nodes
+        const mouse = { x: null, y: null };
 
-        // Create grid of nodes
-        for (let x = 0; x < nodeCountX; x++) {
-            for (let y = 0; y < nodeCountY; y++) {
-                nodes.push({
-                    x: x * spacing + 50,
-                    y: y * spacing + 50,
-                    connected: false
-                });
+        class Node {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 5 + Math.random() * 5; // Random radius
+                this.speedX = (Math.random() - 0.5) * 2; // Random x speed
+                this.speedY = (Math.random() - 0.5) * 2; // Random y speed
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Respawn node if it goes out of view
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffcc00'; // Node color
+                ctx.fill();
             }
         }
 
-        // Draw nodes and lines
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        function createNodes() {
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push(new Node(Math.random() * canvas.width, Math.random() * canvas.height));
+            }
+        }
 
-            // Draw lines between nodes
+        function connectNodes() {
+            ctx.strokeStyle = 'rgba(255, 204, 0, 0.5)'; // Line color
+            ctx.lineWidth = 1;
+
             for (let i = 0; i < nodes.length; i++) {
                 for (let j = i + 1; j < nodes.length; j++) {
-                    if (nodes[i].connected) {
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-                        ctx.lineWidth = 1;
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // Draw a line if nodes are close enough
+                    if (distance < 100) {
                         ctx.beginPath();
                         ctx.moveTo(nodes[i].x, nodes[i].y);
                         ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -71,48 +96,32 @@
                     }
                 }
             }
-
-            // Draw nodes
-            for (const node of nodes) {
-                ctx.fillStyle = 'white';
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
-                ctx.fill();
-            }
         }
 
-        // Check for mouse proximity to nodes
-        canvas.addEventListener('mousemove', (event) => {
-            const mouseX = event.clientX;
-            const mouseY = event.clientY;
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            nodes.forEach(node => {
+                node.update();
+                node.draw();
+            });
+            connectNodes();
+            requestAnimationFrame(animate);
+        }
 
-            // Reset connections
-            for (const node of nodes) {
-                node.connected = false;
-            }
-
-            // Determine which nodes are connected to the mouse
-            for (const node of nodes) {
-                const dx = mouseX - node.x;
-                const dy = mouseY - node.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < 150) { // Connection distance threshold
-                    node.connected = true;
-                }
-            }
-
-            draw();
+        // Mouse movement event listener
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
         });
 
-        // Initial drawing
-        draw();
+        // Initialize nodes and start animation
+        createNodes();
+        animate();
 
         // Resize canvas on window resize
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            draw();
         });
     </script>
 </body>
