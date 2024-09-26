@@ -40,12 +40,13 @@
             float: left;
             display: flex;
             justify-content: center; /* Center the content horizontally */
-            align-items: flex-end; /* Align items to the bottom */
+            align-items: center; /* Center the content vertically */
+            position: relative; /* Relative positioning for absolute child */
         }
 
         /* Frame for About Me section */
         .about-me-frame {
-            background-color: #080f1c; /* Match background color */
+            background-color: #19428b; /* Match the dark mode background color */
             color: #e2e8f4; /* Text color */
             padding: 40px; /* Increased padding for larger frame */
             border-radius: 10px; /* Rounded corners */
@@ -53,7 +54,6 @@
             width: 80%; /* Width of the frame */
             max-width: 600px; /* Maximum width of the frame */
             text-align: center; /* Center text */
-            margin-bottom: 20px; /* Space from the bottom */
         }
 
         /* Placeholder styles */
@@ -79,6 +79,17 @@
             height: 80%; /* Set the image height to 80% */
             width: auto; /* Let the width adjust automatically */
         }
+
+        /* Background color for visual impact */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: calc(300px * 2); /* Assuming image width is 300px */
+            height: calc(500px * 2); /* Assuming image height is 500px */
+            background-color: #080f1c; /* Same background color */
+            z-index: 1; /* Behind everything else */
+        }
     </style>
 </head>
 <body>
@@ -91,6 +102,8 @@
                 This is a short description about me. I am passionate about web development and design, and I enjoy creating interactive and user-friendly applications.
             </p>
         </div>
+        <!-- Background Cover -->
+        <div class="background"></div>
     </div>
 
     <!-- Image at the seam -->
