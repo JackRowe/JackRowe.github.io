@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Split Background</title>
+    <title>Split Background with Image on Seam</title>
     <style>
         * {
             margin: 0;
@@ -24,23 +24,42 @@
 
         /* Primary section (1/4 of the page) */
         .primary {
-            background-color: #3498db; /* Primary color */
+            background-color: #93a4d7; /* Primary color */
             height: 100vh;
-            width: 25%; /* Changed to 25% */
+            width: 25%; /* 1/4 of the screen */
             float: left;
         }
 
         /* Dark Mode section (3/4 of the page) */
         .dark-mode {
-            background-color: #111111; /* Plain dark color (black) */
+            background-color: #0f0f0f; /* Secondary color (dark) */
             height: 100vh;
-            width: 75%; /* Changed to 75% */
+            width: 75%; /* 3/4 of the screen */
             float: left;
+        }
+
+        /* Image on the seam */
+        .seam-image {
+            position: absolute;
+            top: 50%;
+            left: 25%; /* Position it exactly on the seam */
+            transform: translate(-50%, -50%); /* Center the image */
+            z-index: 10;
+        }
+
+        .seam-image img {
+            height: 80vh; /* Scale the image as needed */
+            width: auto;
         }
     </style>
 </head>
 <body>
     <div class="split-section primary"></div>
     <div class="split-section dark-mode"></div>
+
+    <!-- Image at the seam -->
+    <div class="seam-image">
+        <img src="https://via.placeholder.com/300x500.png?text=Person+Image" alt="Person with transparent background">
+    </div>
 </body>
 </html>
