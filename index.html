@@ -14,6 +14,8 @@
         body, html {
             height: 100%;
             font-family: Arial, sans-serif;
+            background-color: #080f1c; /* Background color */
+            color: #e2e8f4; /* Text color */
         }
 
         /* Container for split sections */
@@ -24,7 +26,7 @@
 
         /* Primary section (1/4 of the page) */
         .primary {
-            background-color: #93a4d7; /* Primary color */
+            background-color: #86a7e2; /* Primary color */
             height: 100vh;
             width: 25%; /* 1/4 of the screen */
             float: left;
@@ -32,35 +34,50 @@
 
         /* Dark Mode section (3/4 of the page) */
         .dark-mode {
-            background-color: #0f0f0f; /* Dark color */
+            background-color: #19428b; /* Secondary color */
             height: 100vh;
             width: 75%; /* 3/4 of the screen */
             float: left;
             display: flex;
             justify-content: center; /* Center the content horizontally */
-            align-items: center; /* Center the content vertically */
+            align-items: flex-end; /* Align items to the bottom */
         }
 
         /* Frame for About Me section */
         .about-me-frame {
-            background-color: #fff; /* White background for the frame */
-            color: #000; /* Black text color */
-            padding: 20px;
+            background-color: #080f1c; /* Match background color */
+            color: #e2e8f4; /* Text color */
+            padding: 40px; /* Increased padding for larger frame */
             border-radius: 10px; /* Rounded corners */
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
             width: 80%; /* Width of the frame */
-            max-width: 400px; /* Maximum width of the frame */
+            max-width: 600px; /* Maximum width of the frame */
             text-align: center; /* Center text */
+            margin-bottom: 20px; /* Space from the bottom */
         }
 
         /* Placeholder styles */
         .about-me-frame h2 {
-            margin-bottom: 10px; /* Spacing below the name */
+            margin-bottom: 20px; /* Spacing below the name */
         }
 
         .about-me-frame p {
-            font-size: 14px; /* Font size for the description */
+            font-size: 16px; /* Font size for the description */
             line-height: 1.5; /* Spacing between lines */
+        }
+
+        /* Image on the seam */
+        .seam-image {
+            position: absolute;
+            bottom: 0; /* Move the image to touch the bottom */
+            left: 25%; /* Position it exactly on the seam */
+            transform: translateX(-50%); /* Center the image horizontally */
+            z-index: 10;
+        }
+
+        .seam-image img {
+            height: 80%; /* Set the image height to 80% */
+            width: auto; /* Let the width adjust automatically */
         }
     </style>
 </head>
@@ -74,6 +91,11 @@
                 This is a short description about me. I am passionate about web development and design, and I enjoy creating interactive and user-friendly applications.
             </p>
         </div>
+    </div>
+
+    <!-- Image at the seam -->
+    <div class="seam-image">
+        <img src="https://via.placeholder.com/300x500.png?text=Person+Image" alt="Person with transparent background">
     </div>
 </body>
 </html>
