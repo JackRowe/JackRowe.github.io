@@ -3,122 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
+    <title>Dynamic Node Background</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Prevent scroll bars */
+            overflow: hidden;
             background-color: #03050a;
-            font-family: Arial, sans-serif;
             color: white;
-            height: 100vh; /* Ensure full viewport height */
-        }
-        h1 {
-            text-align: center;
-            padding-top: 20%;
-            position: relative; /* Ensure h1 stays on top */
-            z-index: 1; /* Place h1 above canvas */
+            font-family: Arial, sans-serif;
         }
         canvas {
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 0; /* Place canvas below h1 */
+        }
+        h1 {
+            position: relative;
+            text-align: center;
+            z-index: 10; /* Ensure text is above the canvas */
+            padding-top: 20%;
         }
     </style>
 </head>
 <body>
     <h1>Welcome to My Website</h1>
     <canvas id="canvas"></canvas>
+
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
-        // Resize canvas to full window size
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
         const nodes = [];
-        const nodeCount = 100; // Total number of nodes
-        const mouse = { x: null, y: null };
+        const nodeCount = 100; // Number of nodes
+        const nodeSize = 5; // Size of nodes
 
         class Node {
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.radius = 5 + Math.random() * 5; // Random radius
-                this.speedX = (Math.random() - 0.5) * 2; // Random x speed
-                this.speedY = (Math.random() - 0.5) * 2; // Random y speed
-            }
-
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                // Respawn node if it goes out of view
-                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                }
+                this.connections = [];
             }
 
             draw() {
+                ctx.fillStyle = 'white';
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#ffcc00'; // Node color
+                ctx.arc(this.x, this.y, nodeSize, 0, Math.PI * 2);
                 ctx.fill();
             }
-        }
 
-        function createNodes() {
-            for (let i = 0; i < nodeCount; i++) {
-                nodes.push(new Node(Math.random() * canvas.width, Math.random() * canvas.height));
+            connect(node) {
+                this.connections.push(node);
             }
         }
 
-        function connectNodes() {
-            ctx.strokeStyle = 'rgba(255, 204, 0, 0.5)'; // Line color
-            ctx.lineWidth = 1;
+        function createNode() {
+            const x = Math.random() * (canvas.width + 100) - 100; // Spawn outside of view
+            const y = Math.random() * canvas.height;
+            const node = new Node(x, y);
+            nodes.push(node);
+            return node;
+        }
 
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    const dx = nodes[i].x - nodes[j].x;
-                    const dy = nodes[i].y - nodes[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
+        function connectNodes(nodeA, nodeB) {
+            nodeA.connect(nodeB);
+            nodeB.connect(nodeA);
+        }
 
-                    // Draw a line if nodes are close enough
-                    if (distance < 100) {
-                        ctx.beginPath();
-                        ctx.moveTo(nodes[i].x, nodes[i].y);
-                        ctx.lineTo(nodes[j].x, nodes[j].y);
-                        ctx.stroke();
-                    }
+        function createNetwork() {
+            for (let i = 0; i < nodeCount; i++) {
+                const newNode = createNode();
+                if (i > 0) {
+                    const randomIndex = Math.floor(Math.random() * i);
+                    connectNodes(newNode, nodes[randomIndex]);
                 }
             }
         }
 
-        function animate() {
+        function update() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            nodes.forEach(node => {
-                node.update();
+            for (const node of nodes) {
+                node.x -= 1; // Move left across the screen
                 node.draw();
+
+                // Draw connections
+                for (const connectedNode of node.connections) {
+                    ctx.beginPath();
+                    ctx.moveTo(node.x, node.y);
+                    ctx.lineTo(connectedNode.x, connectedNode.y);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.stroke();
+                }
+            }
+
+            // Remove nodes that have left the view and create new ones
+            nodes.forEach((node, index) => {
+                if (node.x + nodeSize < 0) {
+                    nodes.splice(index, 1);
+                    createNode(); // Spawn new node
+                }
             });
-            connectNodes();
-            requestAnimationFrame(animate);
+
+            requestAnimationFrame(update);
         }
 
-        // Mouse movement event listener
-        window.addEventListener('mousemove', (event) => {
-            mouse.x = event.x;
-            mouse.y = event.y;
-        });
+        createNetwork();
+        update();
 
-        // Initialize nodes and start animation
-        createNodes();
-        animate();
-
-        // Resize canvas on window resize
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
