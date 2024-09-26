@@ -47,14 +47,14 @@
         /* Image on the seam */
         .seam-image {
             position: absolute;
-            bottom: 10px; /* Push the image down by 10 pixels */
+            bottom: -10px; /* Push the image down by 10 pixels */
             left: 25%; /* Position it exactly on the seam */
             transform: translateX(-50%); /* Center the image horizontally */
             z-index: 10;
         }
 
         .seam-image img {
-            height: 100%; /* Set the image height to fill the container */
+            height: 50vh; /* Set the height to 50% of the viewport height */
             width: auto; /* Let the width adjust automatically */
             max-width: none; /* Allow the width to exceed the normal constraints */
         }
