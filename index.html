@@ -33,24 +33,13 @@
             constructor(x, y) {
                 this.position = { x, y };
                 this.velocity = {
-                    x: (Math.random() - 0.5) * 0.5, // Slower random velocity
+                    x: (Math.random() - 0.5) * 0.5, // Reduced velocity for slower movement
                     y: (Math.random() - 0.5) * 0.5
                 };
                 this.radius = 5; // Node size
             }
 
-            update(mousePos) {
-                // Mouse interaction: move slightly towards the mouse
-                const dx = mousePos.x - this.position.x;
-                const dy = mousePos.y - this.position.y;
-                const distanceToMouse = Math.sqrt(dx * dx + dy * dy);
-
-                // If the mouse is close enough, attract the node towards it
-                if (distanceToMouse < 200) {
-                    this.velocity.x += (dx / distanceToMouse) * 0.02;
-                    this.velocity.y += (dy / distanceToMouse) * 0.02;
-                }
-
+            update() {
                 this.position.x += this.velocity.x;
                 this.position.y += this.velocity.y;
             }
@@ -72,8 +61,7 @@
         }
 
         const nodes = [];
-        const numberOfNodes = 100;
-        const minDistance = 50; // Minimum distance between nodes
+        const numberOfNodes = 100; // Number of nodes
 
         function spawnNode() {
             const x = Math.random() * canvas.width;
@@ -83,44 +71,31 @@
 
         function connectNodes() {
             for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    const dx = nodes[i].position.x - nodes[j].position.x;
-                    const dy = nodes[i].position.y - nodes[j].position.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    // Maintain minimum distance and connect nodes
-                    if (distance < minDistance) {
-                        const angle = Math.atan2(dy, dx);
-                        nodes[i].position.x += Math.cos(angle) * (minDistance - distance) / 2; // Move nodes apart
-                        nodes[j].position.x -= Math.cos(angle) * (minDistance - distance) / 2;
-                        nodes[i].position.y += Math.sin(angle) * (minDistance - distance) / 2;
-                        nodes[j].position.y -= Math.sin(angle) * (minDistance - distance) / 2;
-                    }
-
-                    if (distance < 100) { // Connect nodes
-                        ctx.beginPath();
-                        ctx.moveTo(nodes[i].position.x, nodes[i].position.y);
-                        ctx.lineTo(nodes[j].position.x, nodes[j].position.y);
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                        ctx.stroke();
-                        ctx.closePath();
+                const currentNode = nodes[i];
+                for (let j = 0; j < nodes.length; j++) {
+                    if (i !== j) {
+                        const otherNode = nodes[j];
+                        const dx = currentNode.position.x - otherNode.position.x;
+                        const dy = currentNode.position.y - otherNode.position.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < 100) { // Adjust this value for connection distance
+                            ctx.beginPath();
+                            ctx.moveTo(currentNode.position.x, currentNode.position.y);
+                            ctx.lineTo(otherNode.position.x, otherNode.position.y);
+                            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
                     }
                 }
             }
         }
 
-        // Mouse position tracking
-        const mousePos = { x: 0, y: 0 };
-        window.addEventListener('mousemove', (e) => {
-            mousePos.x = e.clientX;
-            mousePos.y = e.clientY;
-        });
-
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             connectNodes();
             nodes.forEach((node, index) => {
-                node.update(mousePos);
+                node.update();
                 node.draw();
                 if (node.isOutOfView()) {
                     nodes.splice(index, 1); // Remove node from array
@@ -130,6 +105,7 @@
             requestAnimationFrame(animate);
         }
 
+        // Spawn initial nodes
         for (let i = 0; i < numberOfNodes; i++) {
             spawnNode();
         }
