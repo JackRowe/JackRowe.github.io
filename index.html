@@ -39,7 +39,7 @@
         const maxNodes = 50;
         const nodeSpeed = 1; // Speed of nodes
         const nodeSize = 5; // Size of nodes
-        const maxConnections = 3; // Maximum connections per node
+        const maxConnections = 3; // Maximum number of connections per node
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -61,10 +61,7 @@
             const xDirection = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.5 + 0.5);
             const yDirection = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.5 + 0.5);
 
-            // Initialize connections
-            const connections = [];
-
-            nodes.push({ x, y, xDirection, yDirection, connections });
+            nodes.push({ x, y, xDirection, yDirection, connections: [] });
         }
 
         // Update node positions and manage their lifecycle
@@ -78,6 +75,35 @@
                     node.y < -nodeSize || node.y > canvas.height + nodeSize) {
                     nodes.splice(index, 1); // Remove node
                     createNode(true); // Spawn a new node outside of the viewport
+                }
+            });
+
+            // Create connections after updating positions
+            createConnections();
+        }
+
+        // Create connections between nodes
+        function createConnections() {
+            nodes.forEach(node => {
+                // Find closest unconnected neighbors
+                const unconnectedNeighbors = nodes.filter(otherNode => {
+                    return node !== otherNode && 
+                           node.connections.indexOf(otherNode) === -1 &&
+                           otherNode.connections.indexOf(node) === -1;
+                });
+
+                // Sort unconnected neighbors by distance
+                unconnectedNeighbors.sort((a, b) => {
+                    const distA = Math.sqrt((node.x - a.x) ** 2 + (node.y - a.y) ** 2);
+                    const distB = Math.sqrt((node.x - b.x) ** 2 + (node.y - b.y) ** 2);
+                    return distA - distB;
+                });
+
+                // Connect to the closest unconnected neighbors up to maxConnections
+                for (let i = 0; i < Math.min(maxConnections, unconnectedNeighbors.length); i++) {
+                    const neighbor = unconnectedNeighbors[i];
+                    node.connections.push(neighbor);
+                    neighbor.connections.push(node);
                 }
             });
         }
@@ -95,29 +121,13 @@
             });
 
             // Draw connections
-            nodes.forEach((node, i) => {
-                for (let j = 0; j < nodes.length; j++) {
-                    if (i !== j && node.connections.length < maxConnections && !node.connections.includes(nodes[j])) {
-                        const dx = nodes[j].x - node.x;
-                        const dy = nodes[j].y - node.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-
-                        // Only connect nodes if they are within a certain distance
-                        if (distance < 100) {
-                            node.connections.push(nodes[j]);
-                        }
-                    }
-                }
-            });
-
-            // Draw connections based on the connection list
             nodes.forEach(node => {
-                node.connections.forEach(connectionNode => {
+                node.connections.forEach(neighbor => {
                     ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
                     ctx.lineWidth = 1;
                     ctx.beginPath();
                     ctx.moveTo(node.x, node.y);
-                    ctx.lineTo(connectionNode.x, connectionNode.y);
+                    ctx.lineTo(neighbor.x, neighbor.y);
                     ctx.stroke();
                 });
             });
