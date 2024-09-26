@@ -66,27 +66,43 @@
                 // Update connections for each node
                 node.connections = []; // Clear existing connections
 
-                let closestNode = null;
-                let closestDistance = Infinity;
-
-                // Find the closest node that is not already connected
+                // Find all nodes within 100 units
                 for (const otherNode of nodes) {
-                    if (otherNode !== node && !node.connections.includes(otherNode)) {
+                    if (otherNode !== node) {
                         const dx = node.x - otherNode.x;
                         const dy = node.y - otherNode.y;
                         const distance = Math.sqrt(dx * dx + dy * dy);
 
-                        // Check for connection within a certain distance
-                        if (distance < 100 && distance < closestDistance) {
-                            closestDistance = distance;
-                            closestNode = otherNode;
+                        // Connect if within distance
+                        if (distance < 100) {
+                            node.connections.push(otherNode);
                         }
                     }
                 }
 
-                // Connect to the closest node if found
-                if (closestNode) {
-                    node.connections.push(closestNode);
+                // If no connections, find the closest node
+                if (node.connections.length === 0) {
+                    let closestNode = null;
+                    let closestDistance = Infinity;
+
+                    for (const otherNode of nodes) {
+                        if (otherNode !== node) {
+                            const dx = node.x - otherNode.x;
+                            const dy = node.y - otherNode.y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+
+                            // Find the closest node
+                            if (distance < closestDistance) {
+                                closestDistance = distance;
+                                closestNode = otherNode;
+                            }
+                        }
+                    }
+
+                    // Connect to the closest node if found
+                    if (closestNode) {
+                        node.connections.push(closestNode);
+                    }
                 }
 
                 // Draw connections
