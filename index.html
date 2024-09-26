@@ -39,7 +39,6 @@
         const maxNodes = 50;
         const nodeSpeed = 1; // Speed of nodes
         const nodeSize = 5; // Size of nodes
-        const maxConnections = 3; // Maximum number of connections per node
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -58,10 +57,29 @@
             }
 
             // Set random direction for movement
-            const xDirection = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.5 + 0.5);
-            const yDirection = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.5 + 0.5);
+            const xDirection = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.5 + 0.5); // Random X direction
+            const yDirection = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.5 + 0.5); // Random Y direction
 
-            nodes.push({ x, y, xDirection, yDirection, connections: [] });
+            nodes.push({ x, y, xDirection, yDirection });
+        }
+
+        // Find the three nearest neighbors for each node
+        function findNearestNeighbors() {
+            const neighbors = nodes.map(() => []);
+            nodes.forEach((nodeA, indexA) => {
+                // Calculate distances to all other nodes
+                const distances = nodes.map((nodeB, indexB) => {
+                    if (indexA === indexB) return Infinity; // Exclude self
+                    const dx = nodeB.x - nodeA.x;
+                    const dy = nodeB.y - nodeA.y;
+                    return { index: indexB, distance: Math.sqrt(dx * dx + dy * dy) };
+                });
+
+                // Sort by distance and take the three nearest neighbors
+                distances.sort((a, b) => a.distance - b.distance);
+                neighbors[indexA] = distances.slice(0, 3).map(d => d.index);
+            });
+            return neighbors;
         }
 
         // Update node positions and manage their lifecycle
@@ -75,35 +93,6 @@
                     node.y < -nodeSize || node.y > canvas.height + nodeSize) {
                     nodes.splice(index, 1); // Remove node
                     createNode(true); // Spawn a new node outside of the viewport
-                }
-            });
-
-            // Create connections after updating positions
-            createConnections();
-        }
-
-        // Create connections between nodes
-        function createConnections() {
-            nodes.forEach(node => {
-                // Find closest unconnected neighbors
-                const unconnectedNeighbors = nodes.filter(otherNode => {
-                    return node !== otherNode && 
-                           node.connections.indexOf(otherNode) === -1 &&
-                           otherNode.connections.indexOf(node) === -1;
-                });
-
-                // Sort unconnected neighbors by distance
-                unconnectedNeighbors.sort((a, b) => {
-                    const distA = Math.sqrt((node.x - a.x) ** 2 + (node.y - a.y) ** 2);
-                    const distB = Math.sqrt((node.x - b.x) ** 2 + (node.y - b.y) ** 2);
-                    return distA - distB;
-                });
-
-                // Connect to the closest unconnected neighbors up to maxConnections
-                for (let i = 0; i < Math.min(maxConnections, unconnectedNeighbors.length); i++) {
-                    const neighbor = unconnectedNeighbors[i];
-                    node.connections.push(neighbor);
-                    neighbor.connections.push(node);
                 }
             });
         }
@@ -120,11 +109,15 @@
                 ctx.fill();
             });
 
-            // Draw connections
-            nodes.forEach(node => {
-                node.connections.forEach(neighbor => {
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                    ctx.lineWidth = 1;
+            // Find nearest neighbors and draw connections
+            const neighbors = findNearestNeighbors();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = 1;
+
+            neighbors.forEach((neighborIndices, index) => {
+                const node = nodes[index];
+                neighborIndices.forEach(neighborIndex => {
+                    const neighbor = nodes[neighborIndex];
                     ctx.beginPath();
                     ctx.moveTo(node.x, node.y);
                     ctx.lineTo(neighbor.x, neighbor.y);
