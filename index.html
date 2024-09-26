@@ -63,8 +63,8 @@
                 this.baseX = x;
                 this.baseY = y;
                 this.density = Math.random() * 30 + 1;
-                this.speedX = (Math.random() - 0.5) * 0.5; // Slow movement in x direction
-                this.speedY = (Math.random() - 0.5) * 0.5; // Slow movement in y direction
+                this.speedX = (Math.random() - 0.5) * 2; // Increased movement speed in x direction
+                this.speedY = (Math.random() - 0.5) * 2; // Increased movement speed in y direction
             }
 
             draw() {
@@ -76,11 +76,11 @@
             }
 
             update() {
-                // Move nodes slowly
+                // Move nodes at a visible pace
                 this.x += this.speedX;
                 this.y += this.speedY;
 
-                // Keep nodes within the screen boundaries
+                // Bounce nodes off screen edges
                 if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
                 if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
 
@@ -88,7 +88,7 @@
                 const dy = mouse.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                // Repel nodes when mouse is near
+                // Repel nodes when the mouse is near
                 if (distance < 100) {
                     const forceDirectionX = dx / distance;
                     const forceDirectionY = dy / distance;
@@ -100,7 +100,7 @@
                     this.x -= directionX;
                     this.y -= directionY;
                 } else {
-                    // Slowly move nodes back to base position
+                    // Slowly return nodes to base position
                     if (this.x !== this.baseX) {
                         const dx = this.x - this.baseX;
                         this.x -= dx / 30;
