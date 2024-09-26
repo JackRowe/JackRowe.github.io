@@ -3,127 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reactive Background with Nodes</title>
+    <title>My Website</title>
     <style>
         body {
             margin: 0;
-            overflow: hidden; /* Prevent scrolling */
+            padding: 0;
+            overflow: hidden; /* Prevent scrollbars */
             background-color: #03050a;
+            font-family: Arial, sans-serif;
+            color: white;
+            position: relative;
+        }
+        h1 {
+            text-align: center;
+            padding-top: 20%;
+            position: absolute;
+            width: 100%;
+            top: 0;
         }
         canvas {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            z-index: -1; /* Send canvas to the back */
         }
     </style>
 </head>
 <body>
+    <h1>Welcome to My Website</h1>
     <canvas id="canvas"></canvas>
+
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-
-        // Resize canvas to fill window
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        class Node {
-            constructor(x, y) {
-                this.position = { x, y };
-                this.velocity = {
-                    x: 0, // Start with no movement
-                    y: 0
-                };
-                this.radius = 5; // Node size
-            }
-
-            update(nodes) {
-                // Move towards nearby nodes
-                nodes.forEach(node => {
-                    if (node !== this) {
-                        const dx = node.position.x - this.position.x;
-                        const dy = node.position.y - this.position.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        if (distance < 100) { // Only influence nodes within 100px
-                            this.velocity.x += (dx / distance) * 0.1; // Adjust 0.1 to control speed
-                            this.velocity.y += (dy / distance) * 0.1; // Adjust 0.1 to control speed
-                        }
-                    }
-                });
-
-                // Update position based on velocity
-                this.position.x += this.velocity.x;
-                this.position.y += this.velocity.y;
-
-                // Dampen the velocity
-                this.velocity.x *= 0.95; // Adjust for smoother movement
-                this.velocity.y *= 0.95; // Adjust for smoother movement
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'white';
-                ctx.fill();
-                ctx.closePath();
-            }
-
-            isOutOfView() {
-                return (
-                    this.position.x < -this.radius || this.position.x > canvas.width + this.radius ||
-                    this.position.y < -this.radius || this.position.y > canvas.height + this.radius
-                );
-            }
-        }
-
         const nodes = [];
-        const numberOfNodes = 100;
+        const numNodes = 10; // Number of nodes
 
-        function spawnNode() {
-            const x = Math.random() * canvas.width;
-            const y = Math.random() * canvas.height;
-            nodes.push(new Node(x, y));
+        // Create nodes with random positions and velocities
+        for (let i = 0; i < numNodes; i++) {
+            nodes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 2, // Random horizontal velocity
+                vy: (Math.random() - 0.5) * 2  // Random vertical velocity
+            });
         }
 
-        function connectNodes() {
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw lines between nodes
             for (let i = 0; i < nodes.length; i++) {
                 for (let j = i + 1; j < nodes.length; j++) {
-                    const dx = nodes[i].position.x - nodes[j].position.x;
-                    const dy = nodes[i].position.y - nodes[j].position.y;
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 100) { // Draw line if within 100px
+                    if (distance < 100) { // Draw line if nodes are close
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / 100})`;
+                        ctx.lineWidth = 1;
                         ctx.beginPath();
-                        ctx.moveTo(nodes[i].position.x, nodes[i].position.y);
-                        ctx.lineTo(nodes[j].position.x, nodes[j].position.y);
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
                         ctx.stroke();
-                        ctx.closePath();
                     }
                 }
             }
+
+            // Draw nodes
+            for (const node of nodes) {
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Update node positions
+            for (const node of nodes) {
+                node.x += node.vx;
+                node.y += node.vy;
+
+                // Reverse direction if node hits canvas edges
+                if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+            }
+
+            requestAnimationFrame(draw);
         }
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            connectNodes();
-            nodes.forEach((node, index) => {
-                node.update(nodes); // Pass nodes for movement logic
-                node.draw();
-                if (node.isOutOfView()) {
-                    nodes.splice(index, 1); // Remove node from array
-                    spawnNode(); // Spawn a new node
-                }
-            });
-            requestAnimationFrame(animate);
-        }
+        // Resize canvas when window is resized
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
 
-        for (let i = 0; i < numberOfNodes; i++) {
-            spawnNode();
-        }
-
-        animate();
+        draw(); // Start drawing
     </script>
 </body>
 </html>
