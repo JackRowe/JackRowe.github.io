@@ -3,60 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programming Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>John Doe - Programming Portfolio</title>
 </head>
 <body>
     <header>
-        <h1>Programming Portfolio</h1>
-        <nav>
-            <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
+        <div class="container">
+            <h1>John Doe</h1>
+            <p>Software Developer</p>
+        </div>
     </header>
 
-    <main>
+    <div class="container">
         <section id="about">
             <h2>About Me</h2>
-            <p>Welcome to my programming portfolio! I'm a passionate programmer with experience in various programming languages and technologies.</p>
+            <p>I'm a passionate software developer with experience in web development and mobile app creation. I love solving complex problems and building user-friendly applications.</p>
+        </section>
+
+        <section id="skills">
+            <h2>Skills</h2>
+            <ul>
+                <li>HTML, CSS, JavaScript</li>
+                <li>React, Vue.js</li>
+                <li>Node.js, Express</li>
+                <li>Python, Django</li>
+                <li>SQL, MongoDB</li>
+            </ul>
         </section>
 
         <section id="projects">
             <h2>Projects</h2>
-            <p>Here are some of the projects I've worked on:</p>
-            <ul>
-                <li>
-                    <h3>Project 1</h3>
-                    <p>Description of project 1</p>
-                </li>
-                <li>
-                    <h3>Project 2</h3>
-                    <p>Description of project 2</p>
-                </li>
-                <li>
-                    <h3>Project 3</h3>
-                    <p>Description of project 3</p>
-                </li>
-            </ul>
+            <div class="project">
+                <h3>E-commerce Website</h3>
+                <p>A fully functional e-commerce site built with React and Node.js.</p>
+            </div>
+            <div class="project">
+                <h3>Task Management App</h3>
+                <p>A mobile app for task management developed using React Native.</p>
+            </div>
+            <div class="project">
+                <h3>Weather Dashboard</h3>
+                <p>A web application that displays weather information using a third-party API.</p>
+            </div>
         </section>
-
-        <section id="contact">
-            <h2>Contact</h2>
-            <p>If you'd like to get in touch with me, you can reach me at:</p>
-            <ul>
-                <li>Email: example@example.com</li>
-                <li>Phone: 123-456-7890</li>
-                <li>LinkedIn: <a href="https://www.linkedin.com/in/your-profile/">Your LinkedIn Profile</a></li>
-                <li>GitHub: <a href="https://github.com/your-username">Your GitHub Profile</a></li>
-            </ul>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2024 Your Name. All rights reserved.</p>
-    </footer>
+    </div>
 </body>
 </html>
