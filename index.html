@@ -3,148 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
+    <title>Jack Rowe</title>
     <style>
+        @font-face {
+            font-family: 'Roboto';
+            src: url('fonts/Roboto-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Roboto';
+            src: url('fonts/Roboto-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            src: url('fonts/Inter_18pt-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
             margin: 0;
             padding: 0;
             background-color: #03050a;
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             color: white;
-            overflow: hidden; /* Hide scrollbar */
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            height: 100vh; /* Full height */
+            justify-content: space-between; /* Space out the content and footer */
         }
+
+        .container {
+            background-color: #1c1e24;
+            border-radius: 15px;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            display: flex;
+            align-items: center;
+            margin: auto; /* Center the container */
+        }
+
+        .image-container {
+            flex: 0 0 150px; /* Fixed width for the image container */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+
+        .content {
+            flex: 1; /* Takes remaining space */
+            margin-left: 20px; /* Space between image and text */
+        }
+
         h1 {
             text-align: center;
-            padding-top: 20%;
-            position: relative;
-            z-index: 1; /* Ensure h1 is above canvas */
+            font-weight: bold;
+            margin: 0;
         }
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 0; /* Ensure canvas is behind other elements */
+
+        p {
+            text-align: center;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .footer {
+            background-color: #03050a; /* Match background color */
+            display: flex;
+            justify-content: center; /* Center the buttons */
+            padding: 10px 0;
+        }
+
+        .footer a {
+            text-decoration: none; /* Remove underline from links */
+            color: white; /* Link color */
+            margin: 0 15px; /* Margin to control spacing between buttons */
+            position: relative; /* Position for tooltip text */
+        }
+
+        .footer img {
+            width: 50px; /* Set a smaller fixed width for buttons */
+            height: 50px; /* Set a smaller fixed height for buttons */
+            border-radius: 10%; /* Optional rounded corners */
+            transition: transform 0.3s; /* Add hover effect */
+        }
+
+        .footer img:hover {
+            transform: scale(1.1); /* Slightly enlarge on hover */
+        }
+
+        /* Tooltip styling */
+        .tooltip {
+            display: none; /* Hidden by default */
+            position: absolute; /* Position it above the button */
+            bottom: 60px; /* Space above the button */
+            left: 50%;
+            transform: translateX(-50%); /* Center it */
+            background-color: rgba(0, 0, 0, 0.8); /* Background color */
+            color: white; /* Text color */
+            padding: 5px 10px; /* Padding */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 12px; /* Font size */
+            white-space: nowrap; /* Prevent line breaks */
+            z-index: 10; /* Ensure it appears above other elements */
+            opacity: 0; /* Start invisible */
+            transition: opacity 0.5s ease; /* Transition for fading effect */
+        }
+
+        .tooltip.visible {
+            display: block; /* Make it block when visible */
+            opacity: 1; /* Fade in */
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to My Website</h1>
-    <canvas id="backgroundCanvas"></canvas>
+    <div class="container">
+        <div class="image-container">
+            <img src="https://cdn.discordapp.com/attachments/892815374033227806/1288894463057461259/dc8382f3c5df346921c7052a7b27d16a.png?ex=66f6d802&is=66f58682&hm=4125ab84b443d3ec07732c2d9561d448a2040ea6697297443eb1c7024c9a55f7&" alt="Placeholder Image">
+        </div>
+        <div class="content">
+            <h1>Jack Rowe</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="https://example.com/1" onmouseover="showTooltip(event, 'LinkedIn')" onmouseout="hideTooltip(event)">
+            <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/linkedin-app-white-icon.png" alt="LinkedIn">
+            <span class="tooltip">Button 1</span>
+        </a>
+        <a href="https://example.com/2" onmouseover="showTooltip(event, 'Github')" onmouseout="hideTooltip(event)">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7cmmOu4xUkNNZlk-qh4r47i9n6R1mLQD-3Q&s" alt="Github">
+            <span class="tooltip">Button 2</span>
+        </a>
+        <a href="https://example.com/3" onmouseover="showTooltip(event, 'Email')" onmouseout="hideTooltip(event)">
+            <img src="/images/email.png" alt="Email">
+            <span class="tooltip">Button 3</span>
+        </a>
+        <a href="https://example.com/4" onmouseover="showTooltip(event, 'Resume')" onmouseout="hideTooltip(event)">
+            <img src="https://via.placeholder.com/50" alt="Resume">
+            <span class="tooltip">Button 4</span>
+        </a>
+    </div>
 
     <script>
-        const canvas = document.getElementById('backgroundCanvas');
-        const ctx = canvas.getContext('2d');
+        function showTooltip(event, text) {
+            const tooltip = event.currentTarget.querySelector('.tooltip');
+            tooltip.innerText = text; // Set the tooltip text
+            tooltip.classList.add('visible'); // Show the tooltip
 
-        let nodes = [];
-        const maxNodes = 50;
-        const nodeSpeed = 1; // Speed of nodes
-        const nodeSize = 5; // Size of nodes
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        // Create a new node
-        function createNode(outsideViewport = false) {
-            let x, y;
-            if (outsideViewport) {
-                // Spawn outside of the viewport
-                x = Math.random() < 0.5 ? -nodeSize : canvas.width + nodeSize;
-                y = Math.random() * canvas.height;
-            } else {
-                // Spawn inside the viewport
-                x = Math.random() * canvas.width;
-                y = Math.random() * canvas.height;
-            }
-
-            // Set random direction for movement
-            const xDirection = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.5 + 0.5); // Random X direction
-            const yDirection = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.5 + 0.5); // Random Y direction
-
-            nodes.push({ x, y, xDirection, yDirection });
+            // Hide the tooltip after 1.5 seconds
+            setTimeout(() => {
+                tooltip.classList.remove('visible'); // Fade out
+            }, 1500);
         }
 
-        // Find the three nearest neighbors for each node
-        function findNearestNeighbors() {
-            const neighbors = nodes.map(() => []);
-            nodes.forEach((nodeA, indexA) => {
-                // Calculate distances to all other nodes
-                const distances = nodes.map((nodeB, indexB) => {
-                    if (indexA === indexB) return Infinity; // Exclude self
-                    const dx = nodeB.x - nodeA.x;
-                    const dy = nodeB.y - nodeA.y;
-                    return { index: indexB, distance: Math.sqrt(dx * dx + dy * dy) };
-                });
-
-                // Sort by distance and take the three nearest neighbors
-                distances.sort((a, b) => a.distance - b.distance);
-                neighbors[indexA] = distances.slice(0, 3).map(d => d.index);
-            });
-            return neighbors;
+        function hideTooltip(event) {
+            const tooltip = event.currentTarget.querySelector('.tooltip');
+            tooltip.classList.remove('visible'); // Fade out immediately
         }
-
-        // Update node positions and manage their lifecycle
-        function updateNodes() {
-            nodes.forEach((node, index) => {
-                node.x += node.xDirection * nodeSpeed;
-                node.y += node.yDirection * nodeSpeed;
-
-                // Check if node is out of the viewport
-                if (node.x < -nodeSize || node.x > canvas.width + nodeSize ||
-                    node.y < -nodeSize || node.y > canvas.height + nodeSize) {
-                    nodes.splice(index, 1); // Remove node
-                    createNode(true); // Spawn a new node outside of the viewport
-                }
-            });
-        }
-
-        // Draw nodes and connections
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-
-            // Draw nodes
-            nodes.forEach(node => {
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, nodeSize, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // Find nearest neighbors and draw connections
-            const neighbors = findNearestNeighbors();
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.lineWidth = 1;
-
-            neighbors.forEach((neighborIndices, index) => {
-                const node = nodes[index];
-                neighborIndices.forEach(neighborIndex => {
-                    const neighbor = nodes[neighborIndex];
-                    ctx.beginPath();
-                    ctx.moveTo(node.x, node.y);
-                    ctx.lineTo(neighbor.x, neighbor.y);
-                    ctx.stroke();
-                });
-            });
-        }
-
-        // Animation loop
-        function animate() {
-            updateNodes();
-            draw();
-            requestAnimationFrame(animate);
-        }
-
-        // Initialize: create initial nodes within the viewport
-        for (let i = 0; i < maxNodes; i++) {
-            createNode(); // Create nodes within the viewport
-        }
-
-        animate();
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
     </script>
 </body>
 </html>
