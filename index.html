@@ -3,120 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Node Background</title>
+    <title>Interactive Background</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            overflow: hidden;
             background-color: #03050a;
-            color: white;
             font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
         }
+
         canvas {
             position: absolute;
             top: 0;
             left: 0;
+            z-index: -1; /* Make the canvas a background layer */
         }
+
         h1 {
-            position: relative;
             text-align: center;
-            z-index: 10; /* Ensure text is above the canvas */
             padding-top: 20%;
         }
     </style>
 </head>
 <body>
     <h1>Welcome to My Website</h1>
-    <canvas id="canvas"></canvas>
+
+    <canvas id="bgCanvas"></canvas>
 
     <script>
-        const canvas = document.getElementById('canvas');
+        const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
+        const nodes = [];
+        const mouse = {
+            x: null,
+            y: null
+        };
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        const nodes = [];
-        const nodeCount = 100; // Number of nodes
-        const nodeSize = 5; // Size of nodes
+        window.addEventListener('resize', function () {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        window.addEventListener('mousemove', function (event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
 
         class Node {
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.connections = [];
+                this.size = 3;
+                this.baseX = x;
+                this.baseY = y;
+                this.density = (Math.random() * 30) + 1;
             }
 
             draw() {
-                ctx.fillStyle = 'white';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, nodeSize, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
                 ctx.fill();
             }
 
-            connect(node) {
-                this.connections.push(node);
+            update() {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 100) {
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    const maxDistance = 100;
+                    const force = (maxDistance - distance) / maxDistance;
+                    const directionX = (forceDirectionX * force * this.density);
+                    const directionY = (forceDirectionY * force * this.density);
+
+                    this.x -= directionX;
+                    this.y -= directionY;
+                } else {
+                    if (this.x !== this.baseX) {
+                        const dx = this.x - this.baseX;
+                        this.x -= dx / 10;
+                    }
+                    if (this.y !== this.baseY) {
+                        const dy = this.y - this.baseY;
+                        this.y -= dy / 10;
+                    }
+                }
+
+                this.draw();
             }
         }
 
-        function createNode() {
-            const x = Math.random() * (canvas.width + 100) - 100; // Spawn outside of view
-            const y = Math.random() * canvas.height;
-            const node = new Node(x, y);
-            nodes.push(node);
-            return node;
-        }
-
-        function connectNodes(nodeA, nodeB) {
-            nodeA.connect(nodeB);
-            nodeB.connect(nodeA);
-        }
-
-        function createNetwork() {
-            for (let i = 0; i < nodeCount; i++) {
-                const newNode = createNode();
-                if (i > 0) {
-                    const randomIndex = Math.floor(Math.random() * i);
-                    connectNodes(newNode, nodes[randomIndex]);
+        function createNodes() {
+            nodes.length = 0;
+            const gridSpacing = 50;
+            for (let y = gridSpacing; y < canvas.height; y += gridSpacing) {
+                for (let x = gridSpacing; x < canvas.width; x += gridSpacing) {
+                    nodes.push(new Node(x, y));
                 }
             }
         }
 
-        function update() {
+        function connectNodes() {
+            for (let a = 0; a < nodes.length; a++) {
+                for (let b = a; b < nodes.length; b++) {
+                    const distance = Math.sqrt((nodes[a].x - nodes[b].x) ** 2 + (nodes[a].y - nodes[b].y) ** 2);
+                    if (distance < 100) {
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[a].x, nodes[a].y);
+                        ctx.lineTo(nodes[b].x, nodes[b].y);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                }
+            }
+        }
+
+        function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (const node of nodes) {
-                node.x -= 1; // Move left across the screen
-                node.draw();
-
-                // Draw connections
-                for (const connectedNode of node.connections) {
-                    ctx.beginPath();
-                    ctx.moveTo(node.x, node.y);
-                    ctx.lineTo(connectedNode.x, connectedNode.y);
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                    ctx.stroke();
-                }
-            }
-
-            // Remove nodes that have left the view and create new ones
-            nodes.forEach((node, index) => {
-                if (node.x + nodeSize < 0) {
-                    nodes.splice(index, 1);
-                    createNode(); // Spawn new node
-                }
-            });
-
-            requestAnimationFrame(update);
+            nodes.forEach(node => node.update());
+            connectNodes();
+            requestAnimationFrame(animate);
         }
 
-        createNetwork();
-        update();
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+        createNodes();
+        animate();
     </script>
 </body>
 </html>
