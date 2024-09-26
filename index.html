@@ -8,91 +8,84 @@
         body {
             margin: 0;
             padding: 0;
-            overflow: hidden;
             background-color: #03050a;
             font-family: Arial, sans-serif;
             color: white;
+            overflow: hidden; /* Hide scrollbar */
+        }
+        h1 {
+            text-align: center;
+            padding-top: 20%;
+            position: relative;
+            z-index: 1; /* Ensure h1 is above canvas */
         }
         canvas {
             position: absolute;
             top: 0;
             left: 0;
-            z-index: -1;
+            z-index: 0; /* Ensure canvas is behind other elements */
         }
     </style>
 </head>
 <body>
     <h1>Welcome to My Website</h1>
-    <canvas id="canvas"></canvas>
+    <canvas id="backgroundCanvas"></canvas>
 
     <script>
-        const canvas = document.getElementById('canvas');
+        const canvas = document.getElementById('backgroundCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Set canvas size
+        let nodes = [];
+        const maxNodes = 50;
+        const nodeSpeed = 1;
+        const nodeSize = 5;
+
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        const nodes = [];
-        const numNodes = 30; // Number of nodes
-        const waveStrength = 50; // Wave push strength
+        // Create a new node
+        function createNode() {
+            const x = Math.random() < 0.5 ? -nodeSize : canvas.width + nodeSize;
+            const y = Math.random() * canvas.height;
+            const direction = x < 0 ? 1 : -1; // Move towards the screen
+            nodes.push({ x, y, direction });
+        }
 
-        // Node class
-        class Node {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 2 - 1;
-                this.radius = 5 + Math.random() * 10; // Random radius
-            }
+        // Update node positions and manage their lifecycle
+        function updateNodes() {
+            nodes.forEach((node, index) => {
+                node.x += nodeSpeed * node.direction;
 
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                // Check if the node is outside the viewport
-                if (this.x < -this.radius || this.x > canvas.width + this.radius ||
-                    this.y < -this.radius || this.y > canvas.height + this.radius) {
-                    this.reset();
+                // Check if node is out of the viewport
+                if (node.x < -nodeSize || node.x > canvas.width + nodeSize) {
+                    nodes.splice(index, 1); // Remove node
+                    createNode(); // Spawn a new node
                 }
-            }
+            });
+        }
 
-            reset() {
-                this.x = Math.random() < 0.5 ? -10 : canvas.width + 10; // Spawn outside
-                this.y = Math.random() * canvas.height;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 2 - 1;
-            }
+        // Draw nodes and connections
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
 
-            draw() {
+            // Draw nodes
+            nodes.forEach(node => {
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.arc(node.x, node.y, nodeSize, 0, Math.PI * 2);
                 ctx.fill();
-            }
-        }
+            });
 
-        // Create nodes
-        function createNodes() {
-            for (let i = 0; i < numNodes; i++) {
-                nodes.push(new Node(Math.random() * canvas.width, Math.random() * canvas.height));
-            }
-        }
-
-        // Draw connections between nodes
-        function drawConnections() {
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.lineWidth = 1;
-
+            // Draw connections
             for (let i = 0; i < nodes.length; i++) {
                 for (let j = i + 1; j < nodes.length; j++) {
-                    const dx = nodes[i].x - nodes[j].x;
-                    const dy = nodes[i].y - nodes[j].y;
+                    const dx = nodes[j].x - nodes[i].x;
+                    const dy = nodes[j].y - nodes[i].y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    // Draw a line if nodes are close enough
-                    if (distance < 100) {
+
+                    if (distance < 100) { // Draw line if nodes are close enough
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.lineWidth = 1;
                         ctx.beginPath();
                         ctx.moveTo(nodes[i].x, nodes[i].y);
                         ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -102,43 +95,21 @@
             }
         }
 
-        // Mouse click event for wave effect
-        window.addEventListener('click', (e) => {
-            const mouseX = e.clientX;
-            const mouseY = e.clientY;
-
-            nodes.forEach(node => {
-                const dx = node.x - mouseX;
-                const dy = node.y - mouseY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                // Push nodes away if they are close
-                if (distance < 100) {
-                    const angle = Math.atan2(dy, dx);
-                    node.speedX += Math.cos(angle) * waveStrength;
-                    node.speedY += Math.sin(angle) * waveStrength;
-                }
-            });
-        });
-
         // Animation loop
         function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            nodes.forEach(node => {
-                node.update();
-                node.draw();
-            });
-
-            drawConnections();
+            updateNodes();
+            draw();
             requestAnimationFrame(animate);
         }
 
-        // Initialize and start animation
-        createNodes();
+        // Initialize
+        for (let i = 0; i < maxNodes; i++) {
+            createNode();
+        }
+
         animate();
 
-        // Resize canvas on window resize
+        // Handle window resize
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
