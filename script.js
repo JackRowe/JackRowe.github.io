@@ -7,7 +7,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentVideoIndex = -1;
     let activeVideoElement = document.getElementById('backgroundVideo1');
     let inactiveVideoElement = document.getElementById('backgroundVideo2');
+    let nodes = [];
+    const leftSide = document.querySelector('.left-side');
+    const connectionCanvas = document.createElement('canvas');
+    let ctx;
+    const nodeSize = 4; // Size of each node
 
+    // Initialize canvas and context
+    function initCanvas() {
+        connectionCanvas.style.position = 'absolute';
+        connectionCanvas.style.top = '0';
+        connectionCanvas.style.left = '0';
+        connectionCanvas.width = leftSide.clientWidth;
+        connectionCanvas.height = leftSide.clientHeight;
+        ctx = connectionCanvas.getContext('2d');
+        leftSide.appendChild(connectionCanvas);
+    }
+
+    // Handle video selection
     function selectRandomVideo() {
         let newIndex;
         do {
@@ -16,56 +33,55 @@ document.addEventListener('DOMContentLoaded', () => {
         
         currentVideoIndex = newIndex;
         const selectedVideo = videos[currentVideoIndex];
-
         inactiveVideoElement.src = selectedVideo.src;
         inactiveVideoElement.load();
-
+        
         inactiveVideoElement.oncanplay = () => {
             inactiveVideoElement.play();
             inactiveVideoElement.classList.add('active');
             activeVideoElement.classList.remove('active');
-
             document.getElementById('projectName').textContent = selectedVideo.name;
             document.getElementById('projectDate').textContent = selectedVideo.date;
-
             [activeVideoElement, inactiveVideoElement] = [inactiveVideoElement, activeVideoElement];
         };
     }
 
-    window.addEventListener('load', selectRandomVideo);
-    setInterval(selectRandomVideo, 30000);
+    // Spawn nodes based on window size
+    function spawnNodes() {
+        // Calculate the number of nodes based on window size
+        const width = leftSide.clientWidth;
+        const height = leftSide.clientHeight;
+        const area = width * height;
 
-    const themeToggle = document.getElementById('themeToggle');
-    const body = document.body;
+        // Determine the number of nodes (max 150 nodes for larger areas)
+        const maxNodes = Math.min(Math.floor(area / 400), 150); // Example: 1 node for every 400px², capped at 150 nodes
+        const minNodeDistance = Math.max(nodeSize * 2, width / 15); // Ensure nodes are not too close in smaller areas
 
-    // Light/Dark mode toggle
-    themeToggle.addEventListener('click', () => {
-        body.classList.toggle('light-mode');
+        nodes.forEach(node => leftSide.removeChild(node.element)); // Clear previous nodes
+        nodes = []; // Reset nodes array
 
-        // Update the toggle button image based on the current theme
-        if (body.classList.contains('light-mode')) {
-            themeToggle.src = 'images/dark.png'; // Use light mode icon
-        } else {
-            themeToggle.src = 'images/light.png'; // Use dark mode icon
+        // Create nodes
+        for (let i = 0; i < maxNodes; i++) {
+            spawnNode(minNodeDistance);
         }
-    });
+    }
 
-    const nodes = [];
-    const leftSide = document.querySelector('.left-side');
-    const connectionCanvas = document.createElement('canvas'); // Create a canvas for lines
-    leftSide.appendChild(connectionCanvas);
-    connectionCanvas.style.position = 'absolute';
-    connectionCanvas.style.top = '0';
-    connectionCanvas.style.left = '0';
-    connectionCanvas.width = leftSide.clientWidth;
-    connectionCanvas.height = leftSide.clientHeight;
+    // Spawn a single node
+    function spawnNode(minNodeDistance) {
+        let leftPosition, topPosition;
+        let attempts = 0;
 
-    const ctx = connectionCanvas.getContext('2d');
-    const initialNodeCount = 110; // Increased initial number of nodes
-    const nodeSize = 4; // Size of each node, smaller than before
-    const minNodeDistance = 60; // Minimum distance between nodes
+        do {
+            leftPosition = Math.random() * (leftSide.clientWidth - nodeSize) + 'px';
+            topPosition = Math.random() * (leftSide.clientHeight - nodeSize) + 'px';
+            attempts++;
+            if (attempts > 100) return; // Exit after too many attempts
+        } while (!canSpawnNode(parseFloat(leftPosition) + nodeSize / 2, parseFloat(topPosition) + nodeSize / 2, minNodeDistance));
 
-    // Function to create and spawn nodes
+        createNode(leftPosition, topPosition);
+    }
+
+    // Create a node
     function createNode(leftPosition, topPosition) {
         const node = document.createElement('div');
         node.classList.add('moving-node');
@@ -73,108 +89,57 @@ document.addEventListener('DOMContentLoaded', () => {
         node.style.top = topPosition;
         nodes.push({
             element: node,
-            velocityX: (Math.random() - 0.5) * 0.25, // Slower movement
-            velocityY: (Math.random() - 0.5) * 0.25 // Slower movement
+            velocityX: (Math.random() - 0.5) * 0.25,
+            velocityY: (Math.random() - 0.5) * 0.25
         });
         leftSide.appendChild(node);
     }
 
-    // Check for minimum distance before creating a new node
-    function canSpawnNode(newX, newY) {
+    // Check minimum distance before spawning new node
+    function canSpawnNode(newX, newY, minNodeDistance) {
         return nodes.every(node => {
             const nodeX = parseFloat(node.element.style.left) + nodeSize / 2;
             const nodeY = parseFloat(node.element.style.top) + nodeSize / 2;
             const distance = Math.hypot(nodeX - newX, nodeY - newY);
-            return distance >= minNodeDistance; // Check distance
+            return distance >= minNodeDistance;
         });
     }
 
-    // Function to spawn nodes in a more spread-out manner
-    function spawnInitialNodes() {
-        for (let i = 0; i < initialNodeCount; i++) {
-            let leftPosition, topPosition;
-            do {
-                leftPosition = Math.random() * (leftSide.clientWidth - nodeSize) + 'px';
-                topPosition = Math.random() * (leftSide.clientHeight - nodeSize) + 'px';
-            } while (!canSpawnNode(parseFloat(leftPosition) + nodeSize / 2, parseFloat(topPosition) + nodeSize / 2)); // Ensure minimum distance
-            createNode(leftPosition, topPosition);
-        }
-    }
-
-    spawnInitialNodes();
-
-    function maintainMinDistance(node) {
-        const currentLeft = parseFloat(node.element.style.left);
-        const currentTop = parseFloat(node.element.style.top);
-
-        nodes.forEach(otherNode => {
-            if (node !== otherNode) {
-                const otherLeft = parseFloat(otherNode.element.style.left);
-                const otherTop = parseFloat(otherNode.element.style.top);
-                const distance = Math.hypot(currentLeft - otherLeft, currentTop - otherTop);
-
-                if (distance < minNodeDistance) {
-                    const angle = Math.atan2(currentTop - otherTop, currentLeft - otherLeft);
-                    const moveDistance = (minNodeDistance - distance) / 2; // Move half the distance to maintain minimum spacing
-
-                    // Adjust positions
-                    node.element.style.left = currentLeft + Math.cos(angle) * moveDistance + 'px';
-                    node.element.style.top = currentTop + Math.sin(angle) * moveDistance + 'px';
-                }
-            }
-        });
-    }
-
+    // Update node positions
     function updateNodes() {
         nodes.forEach((node, index) => {
-            // Move node based on velocity
             const currentLeft = parseFloat(node.element.style.left);
             const currentTop = parseFloat(node.element.style.top);
-
-            // Update positions
             node.element.style.left = currentLeft + node.velocityX + 'px';
             node.element.style.top = currentTop + node.velocityY + 'px';
 
-            // Maintain minimum distance from other nodes
-            maintainMinDistance(node);
-
             // Remove node if it exits the viewport
-            if (
-                currentLeft < -10 || currentLeft > leftSide.clientWidth + 10 || // Left or right
-                currentTop < -10 || currentTop > leftSide.clientHeight + 10 // Top or bottom
-            ) {
+            if (currentLeft < -10 || currentLeft > leftSide.clientWidth + 10 ||
+                currentTop < -10 || currentTop > leftSide.clientHeight + 10) {
                 leftSide.removeChild(node.element);
-                nodes.splice(index, 1); // Remove from the array
-                // Spawn a new node to replace the deleted one
-                let leftPosition, topPosition;
-                do {
-                    leftPosition = Math.random() * (leftSide.clientWidth - nodeSize) + 'px';
-                    topPosition = Math.random() * (leftSide.clientHeight - nodeSize) + 'px';
-                } while (!canSpawnNode(parseFloat(leftPosition) + nodeSize / 2, parseFloat(topPosition) + nodeSize / 2)); // Ensure minimum distance
-                createNode(leftPosition, topPosition);
+                nodes.splice(index, 1);
+                spawnNode(Math.max(nodeSize * 2, leftSide.clientWidth / 15)); // Spawn new node
             }
         });
     }
 
+    // Draw connections between nodes
     function drawConnections() {
-        ctx.clearRect(0, 0, connectionCanvas.width, connectionCanvas.height); // Clear the canvas
-
-        ctx.strokeStyle = 'rgba(55, 55, 55, 0.5)'; // Set line color with transparency
-        ctx.lineWidth = 1; // Set line width
+        ctx.clearRect(0, 0, connectionCanvas.width, connectionCanvas.height);
+        ctx.strokeStyle = 'rgba(55, 55, 55, 0.5)';
+        ctx.lineWidth = 1;
 
         for (let i = 0; i < nodes.length; i++) {
             for (let j = i + 1; j < nodes.length; j++) {
                 const nodeA = nodes[i];
                 const nodeB = nodes[j];
+                const xA = parseFloat(nodeA.element.style.left) + nodeSize / 2;
+                const yA = parseFloat(nodeA.element.style.top) + nodeSize / 2;
+                const xB = parseFloat(nodeB.element.style.left) + nodeSize / 2;
+                const yB = parseFloat(nodeB.element.style.top) + nodeSize / 2;
 
-                const xA = parseFloat(nodeA.element.style.left) + nodeSize / 2; // Center of node A
-                const yA = parseFloat(nodeA.element.style.top) + nodeSize / 2; // Center of node A
-                const xB = parseFloat(nodeB.element.style.left) + nodeSize / 2; // Center of node B
-                const yB = parseFloat(nodeB.element.style.top) + nodeSize / 2; // Center of node B
-
-                // Draw line if nodes are within a certain distance
                 const distance = Math.hypot(xB - xA, yB - yA);
-                if (distance < 100) { // Change this value for more/less connectivity
+                if (distance < 100) { // Connection threshold
                     ctx.beginPath();
                     ctx.moveTo(xA, yA);
                     ctx.lineTo(xB, yB);
@@ -184,12 +149,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Update function
+    // Handle window resize
+    function onResize() {
+        connectionCanvas.width = leftSide.clientWidth;
+        connectionCanvas.height = leftSide.clientHeight;
+        spawnNodes(); // Recalculate and spawn nodes on resize
+    }
+
+    // Debounce resize event
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(onResize, 100);
+    });
+
+    // Main animation loop
     function animate() {
         updateNodes();
         drawConnections();
         requestAnimationFrame(animate);
     }
 
-    animate();
+    // Initialize
+    window.addEventListener('load', () => {
+        initCanvas();
+        spawnNodes(); // Initial node spawning
+        selectRandomVideo();
+        setInterval(selectRandomVideo, 30000);
+        animate();
+    });
 });

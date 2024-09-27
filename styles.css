@@ -276,3 +276,40 @@ body, html {
     border-radius: 50%; /* Make them circular */
     z-index: 1; /* Position them behind text/images but above the background */
 }
+
+.light-mode .moving-node {
+    filter: invert(1);
+}
+
+.connection-line {
+    stroke: rgba(55, 55, 55, 0.5); /* Default line color for dark mode */
+}
+
+/* Light mode styles for connection lines */
+.light-mode .connection-line {
+    filter: invert(1);
+}
+
+.projects-button {
+    background-color: transparent; /* Transparent background */
+    color: white; /* Text color */
+    border: 1px solid white; /* White border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding for the button */
+    font-family: 'Roboto', sans-serif; /* Same font as before */
+    font-size: 24px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+    display: block; /* Block display */
+    margin: 10px auto; /* Center the button */
+    z-index: 2;
+}
+
+.light-mode .projects-button {
+    filter: invert(1);
+}
+
+.projects-button:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly darker on hover */
+    color: white; /* Keep text white on hover */
+}
