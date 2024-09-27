@@ -104,6 +104,21 @@ body, html {
     font-size: 18px;
 }
 
+@media (max-width: 768px) {
+    .right-side {
+        display: none; /* Hide the right side on mobile */
+    }
+
+    .project-info {
+        display: none; /* Also hide the project info */
+    }
+
+    .project-name {
+        display: none; /* Also hide the project info */
+    }
+}
+
+
 .profile-image {
     width: 150px;
     height: 150px;
