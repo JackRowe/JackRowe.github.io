@@ -76,6 +76,7 @@ body, html {
 .background-video.active {
     opacity: 0.5;
     z-index: 1;
+    
 }
 
 .project-info {
@@ -125,6 +126,7 @@ body, html {
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 20px;
+    z-index: 2;
 }
 
 .name {
@@ -133,6 +135,7 @@ body, html {
     font-weight: bold;
     color: white;
     margin-bottom: 10px;
+    z-index: 2;
 }
 
 .about-me {
@@ -142,6 +145,7 @@ body, html {
     text-align: center;
     max-width: 80%;
     margin-bottom: 20px; /* Reduced bottom margin */
+    z-index: 2;
 }
 
 .button-container {
@@ -153,6 +157,7 @@ body, html {
     bottom: 20px;
     left: 0;
     right: 0;
+    z-index: 2;
 }
 
 .button-container img {
@@ -162,6 +167,7 @@ body, html {
     border-radius: 8px;
     filter: invert(0); /* Start as white (for dark mode) */
     transition: transform 0.3s; /* Only transition for scaling effect */
+    z-index: 2;
 }
 
 .button-container img:hover {
@@ -194,12 +200,14 @@ body, html {
     width: 100%;
     border: 1px solid rgba(255, 255, 255, 0.6); /* Match the line color with text */
     margin: 20px 0; /* Add some spacing around the line */
+    z-index: 2;
 }
 
 .skills-section {
     display: flex; /* Use flexbox for horizontal layout */
     justify-content: space-between; /* Space out the items evenly */
     margin-top: 10px; /* Reduced top margin */
+    z-index: 2;
     width: 100%; /* Ensure the section takes full width */
 }
 
@@ -207,12 +215,14 @@ body, html {
     flex: 1; /* Allow each category to grow equally */
     margin: 0 5px; /* Reduced margin between categories */
     text-align: center; /* Center align text */
+    z-index: 2;
 }
 
 .skills-icon {
     width: 50px; /* Set a width for the images */
     height: 50px; /* Set a height for the images */
     margin-bottom: 10px; /* Space between icon and header */
+    z-index: 2;
 }
 
 .skills-header {
@@ -222,6 +232,7 @@ body, html {
     margin-top: 10px; /* Reduced space above the header */
     margin-bottom: 5px; /* Keep space below the header */
     color: white; /* Default to white for dark mode */
+    z-index: 2;
 }
 
 .skills-list {
@@ -231,10 +242,12 @@ body, html {
     margin: 0; /* Reset margin on the list */
     padding-left: 0; /* Remove default padding */
     color: rgb(205, 205, 205); /* Keep the list items white */
+    z-index: 2;
 }
 
 .skills-list li {
     margin-bottom: 5px; /* Add spacing between each list item */
+    z-index: 2;
 }
 
 /* Light Mode Styles */
@@ -253,4 +266,13 @@ body, html {
 
 .light-mode .about-line {
     filter: invert(1); /* Switch to dark (black) for light mode */
+}
+
+.moving-node {
+    position: absolute;
+    width: 4px; /* Smaller size for the node */
+    height: 4px; /* Smaller size for the node */
+    background-color: rgba(25, 25, 25, 1); /* Brighter color and fully opaque */
+    border-radius: 50%; /* Make them circular */
+    z-index: 1; /* Position them behind text/images but above the background */
 }
