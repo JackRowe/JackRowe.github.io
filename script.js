@@ -61,9 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
     connectionCanvas.height = leftSide.clientHeight;
 
     const ctx = connectionCanvas.getContext('2d');
-    const initialNodeCount = 100; // Increased initial number of nodes
+    const initialNodeCount = 110; // Increased initial number of nodes
     const nodeSize = 4; // Size of each node, smaller than before
-    const minNodeDistance = 50; // Minimum distance between nodes
+    const minNodeDistance = 60; // Minimum distance between nodes
 
     // Function to create and spawn nodes
     function createNode(leftPosition, topPosition) {
