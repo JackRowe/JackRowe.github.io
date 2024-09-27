@@ -1,12 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const videos = [
-        { src: "https://class.coolsquad.xyz/u/1727432173.mp4", name: "OpenGL Renderer", date: "March - May 2024" },
-        { src: "https://class.coolsquad.xyz/u/1727433231.mp4", name: "SDL2 Chess", date: "March - May 2024" },
-    ];
-
-    let currentVideoIndex = -1;
-    let activeVideoElement = document.getElementById('backgroundVideo1');
-    let inactiveVideoElement = document.getElementById('backgroundVideo2');
     let nodes = [];
     const leftSide = document.querySelector('.left-side');
     const connectionCanvas = document.createElement('canvas');
@@ -24,28 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
         leftSide.appendChild(connectionCanvas);
     }
 
-    // Handle video selection
-    function selectRandomVideo() {
-        let newIndex;
-        do {
-            newIndex = Math.floor(Math.random() * videos.length);
-        } while (newIndex === currentVideoIndex);
-        
-        currentVideoIndex = newIndex;
-        const selectedVideo = videos[currentVideoIndex];
-        inactiveVideoElement.src = selectedVideo.src;
-        inactiveVideoElement.load();
-        
-        inactiveVideoElement.oncanplay = () => {
-            inactiveVideoElement.play();
-            inactiveVideoElement.classList.add('active');
-            activeVideoElement.classList.remove('active');
-            document.getElementById('projectName').textContent = selectedVideo.name;
-            document.getElementById('projectDate').textContent = selectedVideo.date;
-            [activeVideoElement, inactiveVideoElement] = [inactiveVideoElement, activeVideoElement];
-        };
-    }
-
     // Spawn nodes based on window size
     function spawnNodes() {
         // Calculate the number of nodes based on window size
@@ -54,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const area = width * height;
 
         // Determine the number of nodes (max 150 nodes for larger areas)
-        const maxNodes = Math.min(Math.floor(area / 400), 150); // Example: 1 node for every 400px², capped at 150 nodes
+        const maxNodes = Math.min(Math.floor(area / 100), 300); // Example: 1 node for every 400px², capped at 150 nodes
         const minNodeDistance = Math.max(nodeSize * 2, width / 15); // Ensure nodes are not too close in smaller areas
 
         nodes.forEach(node => leftSide.removeChild(node.element)); // Clear previous nodes
@@ -126,7 +96,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Draw connections between nodes
     function drawConnections() {
         ctx.clearRect(0, 0, connectionCanvas.width, connectionCanvas.height);
-        ctx.strokeStyle = 'rgba(55, 55, 55, 0.5)';
+
+        // Check if light mode is active
+        const isLightMode = document.body.classList.contains('light-mode');
+
+        // Set connection line color based on the mode
+        ctx.strokeStyle = isLightMode ? 'rgba(230, 230, 230, 0.5)' : 'rgba(25, 25, 25, 0.5)'; 
         ctx.lineWidth = 1;
 
         for (let i = 0; i < nodes.length; i++) {
@@ -139,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const yB = parseFloat(nodeB.element.style.top) + nodeSize / 2;
 
                 const distance = Math.hypot(xB - xA, yB - yA);
-                if (distance < 100) { // Connection threshold
+                if (distance < 250) { // Connection threshold
                     ctx.beginPath();
                     ctx.moveTo(xA, yA);
                     ctx.lineTo(xB, yB);
@@ -148,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
 
     // Handle window resize
     function onResize() {
@@ -174,8 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('load', () => {
         initCanvas();
         spawnNodes(); // Initial node spawning
-        selectRandomVideo();
-        setInterval(selectRandomVideo, 30000);
         animate();
     });
 });
