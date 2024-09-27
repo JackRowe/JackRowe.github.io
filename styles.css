@@ -1,0 +1,241 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('fonts/Inter_18pt-Regular.ttf') format('truetype');
+    font-weight: normal;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background-color: #03050a; /* Dark mode by default */
+    color: white;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.left-side {
+    flex: 1;
+    background-color: #03050a;
+    padding: 10px; /* Reduced padding to bring items closer */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+
+.right-side {
+    flex: 2;
+    background-color: #03050a;
+    position: relative;
+    overflow: hidden;
+}
+
+.right-side::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, #03050a, rgba(3, 5, 10, 0));
+    z-index: 2;
+}
+
+.background-video {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.background-video.active {
+    opacity: 0.5;
+    z-index: 1;
+}
+
+.project-info {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    color: white; /* Keep project info white at all times */
+    text-align: right;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    z-index: 3;
+}
+
+.project-name, .project-date {
+    color: white !important; /* Explicitly keep white text */
+}
+
+.project-name {
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.project-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.name {
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.about-me {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: rgb(205, 205, 205);
+    text-align: center;
+    max-width: 80%;
+    margin-bottom: 20px; /* Reduced bottom margin */
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+}
+
+.button-container img {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 8px;
+    filter: invert(0); /* Start as white (for dark mode) */
+    transition: transform 0.3s; /* Only transition for scaling effect */
+}
+
+.button-container img:hover {
+    transform: scale(1.1);
+}
+
+/* Light mode changes button images to black */
+.light-mode .button-container img {
+    filter: invert(1); /* Switch to dark (black) for light mode */
+}
+
+.light-mode {
+    background-color: #f4f4f4;
+    color: #000;
+}
+
+.light-mode .left-side {
+    background-color: #f4f4f4;
+}
+
+.light-mode .right-side::before {
+    background: linear-gradient(to right, #f4f4f4, rgba(244, 244, 244, 0)); /* Match left-side background */
+}
+
+.light-mode .name, .light-mode .about-me {
+    color: #181818; /* Change left-side text to black */
+}
+
+.about-line {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.6); /* Match the line color with text */
+    margin: 20px 0; /* Add some spacing around the line */
+}
+
+.skills-section {
+    display: flex; /* Use flexbox for horizontal layout */
+    justify-content: space-between; /* Space out the items evenly */
+    margin-top: 10px; /* Reduced top margin */
+    width: 100%; /* Ensure the section takes full width */
+}
+
+.skills-category {
+    flex: 1; /* Allow each category to grow equally */
+    margin: 0 5px; /* Reduced margin between categories */
+    text-align: center; /* Center align text */
+}
+
+.skills-icon {
+    width: 50px; /* Set a width for the images */
+    height: 50px; /* Set a height for the images */
+    margin-bottom: 10px; /* Space between icon and header */
+}
+
+.skills-header {
+    font-family: 'Roboto', sans-serif; /* Use the same font */
+    font-size: 18px; /* Make the header larger */
+    font-weight: bold; /* Bold for emphasis */
+    margin-top: 10px; /* Reduced space above the header */
+    margin-bottom: 5px; /* Keep space below the header */
+    color: white; /* Default to white for dark mode */
+}
+
+.skills-list {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    list-style-type: none; /* Use bullet points */
+    margin: 0; /* Reset margin on the list */
+    padding-left: 0; /* Remove default padding */
+    color: rgb(205, 205, 205); /* Keep the list items white */
+}
+
+.skills-list li {
+    margin-bottom: 5px; /* Add spacing between each list item */
+}
+
+/* Light Mode Styles */
+.light-mode .skills-header {
+    color: #000; /* Change header color to black */
+}
+
+.light-mode .skills-list {
+    color: #181818; /* Change list item color to black */
+}
+
+/* Light mode changes icon colors */
+.light-mode .skills-icon {
+    filter: invert(1); /* Switch to dark (black) for light mode */
+}
+
+.light-mode .about-line {
+    filter: invert(1); /* Switch to dark (black) for light mode */
+}
