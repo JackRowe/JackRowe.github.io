@@ -46,21 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    const themeToggle = document.getElementById('themeToggle');
-    const body = document.body;
-
-    // Light/Dark mode toggle
-    themeToggle.addEventListener('click', () => {
-        body.classList.toggle('light-mode');
-
-        // Update the toggle button image based on the current theme
-        if (body.classList.contains('light-mode')) {
-            themeToggle.src = 'images/dark.png'; // Use light mode icon
-        } else {
-            themeToggle.src = 'images/light.png'; // Use dark mode icon
-        }
-    });
-
     // Spawn nodes based on window size
     function spawnNodes() {
         // Calculate the number of nodes based on window size

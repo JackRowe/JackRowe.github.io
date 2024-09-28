@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     let nodes = [];
-    const leftSide = document.querySelector('.left-side');
+    const leftSide = document.querySelector('.projects-page');
     const connectionCanvas = document.createElement('canvas');
     let ctx;
     const nodeSize = 4; // Size of each node
@@ -145,6 +145,90 @@ document.addEventListener('DOMContentLoaded', () => {
         drawConnections();
         requestAnimationFrame(animate);
     }
+
+    function createFrameGrid() {
+        const gridContainer = document.querySelector('.grid-container');
+        const projects = [
+            {
+                name: "Project One",
+                date: "January 2024",
+                description: "A brief description of Project One.",
+                image: "https://via.placeholder.com/300", // Placeholder image
+                skills: ["HTML", "CSS", "JavaScript", "React"]
+            },
+            {
+                name: "Project Two",
+                date: "February 2024",
+                description: "A brief description of Project Two.",
+                image: "https://via.placeholder.com/300", // Placeholder image
+                skills: ["Python", "Django"]
+            },
+            {
+                name: "Project Three",
+                date: "March 2024",
+                description: "A brief description of Project Three.",
+                image: "https://via.placeholder.com/300", // Placeholder image
+                skills: ["Java", "Spring Boot"]
+            },
+            {
+                name: "Project Four",
+                date: "April 2024",
+                description: "A brief description of Project Four.",
+                image: "https://via.placeholder.com/300", // Placeholder image
+                skills: ["Node.js", "Express"]
+            },
+            // Add more projects as needed
+        ];
+
+        projects.forEach(project => {
+            const frame = document.createElement('div');
+            frame.className = 'frame';
+
+            // Create the image element
+            const frameImage = document.createElement('img');
+            frameImage.src = project.image; // Set the image source
+
+            // Create content elements
+            const frameContent = document.createElement('div');
+            frameContent.className = 'frame-content';
+
+            const frameName = document.createElement('div');
+            frameName.className = 'frame-name';
+            frameName.innerText = project.name;
+
+            const frameDate = document.createElement('div');
+            frameDate.className = 'frame-date';
+            frameDate.innerText = project.date;
+
+            const frameDescription = document.createElement('div');
+            frameDescription.className = 'frame-description';
+            frameDescription.innerText = project.description;
+
+            // Create skills list
+            const frameSkills = document.createElement('div');
+            frameSkills.className = 'frame-skills';
+
+            project.skills.forEach(skill => {
+                const skillItem = document.createElement('div');
+                skillItem.className = 'skill';
+                skillItem.innerText = skill; // Set the skill text
+                frameSkills.appendChild(skillItem); // Append each skill to the frame
+            });
+
+            // Append elements to frame content
+            frameContent.appendChild(frameName);
+            frameContent.appendChild(frameDate);
+            frameContent.appendChild(frameDescription);
+            frameContent.appendChild(frameSkills); // Add skills to frame content
+
+            // Append image and content to the frame
+            frame.appendChild(frameImage);
+            frame.appendChild(frameContent);
+            gridContainer.appendChild(frame);
+        });
+    }
+    
+    createFrameGrid();
 
     // Initialize
     window.addEventListener('load', () => {
