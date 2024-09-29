@@ -10,10 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
         connectionCanvas.style.position = 'absolute';
         connectionCanvas.style.top = '0';
         connectionCanvas.style.left = '0';
-        connectionCanvas.width = leftSide.clientWidth;
-        connectionCanvas.height = leftSide.clientHeight;
+        connectionCanvas.style.zIndex = '1';
+        connectionCanvas.width = window.innerWidth;
+        connectionCanvas.height = window.innerHeight;
         ctx = connectionCanvas.getContext('2d');
-        leftSide.appendChild(connectionCanvas);
+        document.body.insertBefore(connectionCanvas, document.body.firstChild);
     }
 
     // Spawn nodes based on window size
@@ -22,14 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const width = leftSide.clientWidth;
         const height = leftSide.clientHeight;
         const area = width * height;
-
-        // Determine the number of nodes (max 150 nodes for larger areas)
-        const maxNodes = Math.min(Math.floor(area / 100), 300); // Example: 1 node for every 400px², capped at 150 nodes
-        const minNodeDistance = Math.max(nodeSize * 2, width / 15); // Ensure nodes are not too close in smaller areas
-
+    
+        // Determine the number of nodes (max 300 nodes for larger areas)
+        const maxNodes = Math.min(Math.floor(area / 100), 300);
+        const minNodeDistance = Math.max(nodeSize * 2, width / 15);
+    
         nodes.forEach(node => leftSide.removeChild(node.element)); // Clear previous nodes
         nodes = []; // Reset nodes array
-
+    
         // Create nodes
         for (let i = 0; i < maxNodes; i++) {
             spawnNode(minNodeDistance);
@@ -150,90 +151,65 @@ document.addEventListener('DOMContentLoaded', () => {
         const gridContainer = document.querySelector('.grid-container');
         const projects = [
             {
-                name: "Project One",
-                date: "January 2024",
-                description: "A brief description of Project One.",
-                image: "https://via.placeholder.com/300", // Placeholder image
-                skills: ["HTML", "CSS", "JavaScript", "React"]
+                name: "OpenGL Renderer",
+                date: "March - May 2024",
+                image: "https://class.coolsquad.xyz/u/1727540135.png",
+                skills: ["C++", "OpenGL"],
+                description: "An advanced OpenGL renderer capable of handling complex 3D scenes with realistic lighting and shadows."
             },
             {
-                name: "Project Two",
-                date: "February 2024",
-                description: "A brief description of Project Two.",
-                image: "https://via.placeholder.com/300", // Placeholder image
-                skills: ["Python", "Django"]
-            },
-            {
-                name: "Project Three",
-                date: "March 2024",
-                description: "A brief description of Project Three.",
-                image: "https://via.placeholder.com/300", // Placeholder image
-                skills: ["Java", "Spring Boot"]
-            },
-            {
-                name: "Project Four",
-                date: "April 2024",
-                description: "A brief description of Project Four.",
-                image: "https://via.placeholder.com/300", // Placeholder image
-                skills: ["Node.js", "Express"]
+                name: "SDL2 Chess",
+                date: "March - May 2024",
+                image: "https://class.coolsquad.xyz/u/1727540248.png",
+                skills: ["C++", "SDL2", "Evercade"],
+                description: "A fully functional chess game implemented using SDL2, compatible with the Evercade gaming system."
             },
             // Add more projects as needed
         ];
 
+        gridContainer.innerHTML = ''; // Clear existing content
+
         projects.forEach(project => {
             const frame = document.createElement('div');
             frame.className = 'frame';
-
-            // Create the image element
-            const frameImage = document.createElement('img');
-            frameImage.src = project.image; // Set the image source
-
-            // Create content elements
-            const frameContent = document.createElement('div');
-            frameContent.className = 'frame-content';
-
-            const frameName = document.createElement('div');
-            frameName.className = 'frame-name';
-            frameName.innerText = project.name;
-
-            const frameDate = document.createElement('div');
-            frameDate.className = 'frame-date';
-            frameDate.innerText = project.date;
-
-            const frameDescription = document.createElement('div');
-            frameDescription.className = 'frame-description';
-            frameDescription.innerText = project.description;
-
-            // Create skills list
-            const frameSkills = document.createElement('div');
-            frameSkills.className = 'frame-skills';
-
-            project.skills.forEach(skill => {
-                const skillItem = document.createElement('div');
-                skillItem.className = 'skill';
-                skillItem.innerText = skill; // Set the skill text
-                frameSkills.appendChild(skillItem); // Append each skill to the frame
-            });
-
-            // Append elements to frame content
-            frameContent.appendChild(frameName);
-            frameContent.appendChild(frameDate);
-            frameContent.appendChild(frameDescription);
-            frameContent.appendChild(frameSkills); // Add skills to frame content
-
-            // Append image and content to the frame
-            frame.appendChild(frameImage);
-            frame.appendChild(frameContent);
+            frame.innerHTML = `
+                <img src="${project.image}" alt="${project.name}">
+                <div class="frame-content">
+                    <div class="frame-name">${project.name}</div>
+                    <div class="frame-date">${project.date}</div>
+                    <div class="frame-description">${project.description}</div>
+                    <div class="frame-skills">
+                        ${project.skills.map(skill => `<div class="skill">${skill}</div>`).join('')}
+                    </div>
+                </div>
+            `;
             gridContainer.appendChild(frame);
         });
     }
-    
-    createFrameGrid();
+
+    function adjustGridLayout() {
+        const gridContainer = document.querySelector('.grid-container');
+        const containerWidth = gridContainer.offsetWidth;
+        const frameWidth = 250; // Minimum width of each frame
+        const gap = 20; // Gap between frames
+        const columns = Math.max(1, Math.floor((containerWidth + gap) / (frameWidth + gap)));
+        gridContainer.style.gridTemplateColumns = `repeat(${columns}, minmax(${frameWidth}px, 1fr))`;
+    }
 
     // Initialize
-    window.addEventListener('load', () => {
+    function init() {
         initCanvas();
-        spawnNodes(); // Initial node spawning
+        spawnNodes();
+        createFrameGrid();
         animate();
-    });
+    }
+
+    // Handle window resize
+    function onResize() {
+        connectionCanvas.width = window.innerWidth;
+        connectionCanvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('load', init);
+    window.addEventListener('resize', onResize);
 });
