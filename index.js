@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const videos = [
         { src: "https://class.coolsquad.xyz/u/1727432173.mp4", name: "OpenGL Renderer", date: "March - May 2024" },
         { src: "https://class.coolsquad.xyz/u/1727433231.mp4", name: "SDL2 Chess", date: "March - May 2024" },
+        { src: "https://class.coolsquad.xyz/u/1727623851.mp4", name: "Flappy Circle", date: "November 2023" },
+        { src: "https://staffs-daforum-1.s3.eu-west-2.amazonaws.com/monthly_2024_02/1df98748-2628-4ae7-bc4f-a86a015e0397(1).mp4.de020506b694815e9e9b7b4f7ab4c75e.mp4", name: "Sky Patrol", date: "January - Febuary 2024" },
+        { src: "https://staffs-daforum-1.s3.eu-west-2.amazonaws.com/monthly_2024_02/1709211074.mp4.9e9d6ab8d4a54851da9df3a0d88b4bc9.mp4", name: "Lost in Orbit", date: "January - Febuary 2024" },
     ];
 
     let currentVideoIndex = -1;

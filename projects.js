@@ -147,28 +147,64 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(animate);
     }
 
-    function createFrameGrid() {
-        const gridContainer = document.querySelector('.grid-container');
-        const projects = [
-            {
-                name: "OpenGL Renderer",
-                date: "March - May 2024",
-                image: "https://class.coolsquad.xyz/u/1727540135.png",
-                skills: ["C++", "OpenGL"],
-                description: "An advanced OpenGL renderer capable of handling complex 3D scenes with realistic lighting and shadows."
-            },
-            {
-                name: "SDL2 Chess",
-                date: "March - May 2024",
-                image: "https://class.coolsquad.xyz/u/1727540248.png",
-                skills: ["C++", "SDL2", "Evercade"],
-                description: "A fully functional chess game implemented using SDL2, compatible with the Evercade gaming system."
-            },
-            // Add more projects as needed
-        ];
+    const gridContainer = document.querySelector('.grid-container');
+    const modal = document.getElementById('projectModal');
+    const closeBtn = document.querySelector('.close');
+    const projects = [
+        {
+            name: "OpenGL Renderer",
+            date: "March - May 2024",
+            image: "https://class.coolsquad.xyz/u/1727540135.png",
+            video: "https://class.coolsquad.xyz/u/1727432173.mp4",
+            skills: ["C++", "OpenGL", "Github"],
+            briefDescription: "An advanced OpenGL renderer for complex 3D scenes.",
+            description: "",
+            githubLink: "https://github.com/JackRowe/OpenGL_Shooter"
+        },
+        {
+            name: "SDL2 Chess",
+            date: "March - May 2024",
+            image: "https://class.coolsquad.xyz/u/1727540248.png",
+            video: "https://class.coolsquad.xyz/u/1727433231.mp4",
+            skills: ["C++", "SDL2", "Evercade", "Github"],
+            briefDescription: "A fully functional chess game using SDL2.",
+            description: "",
+            githubLink: "https://github.com/JackRowe/BespokePlatformDevelopment"
+        },
+        {
+            name: "Sky Patrol",
+            date: "January - Febuary 2024",
+            image: "https://class.coolsquad.xyz/u/1727653811.png",
+            video: "https://staffs-daforum-1.s3.eu-west-2.amazonaws.com/monthly_2024_02/1df98748-2628-4ae7-bc4f-a86a015e0397(1).mp4.de020506b694815e9e9b7b4f7ab4c75e.mp4",
+            skills: ["Unreal Engine", "Visual Scripting"],
+            briefDescription: "",
+            description: "",
+        },
+        {
+            name: "Lost in Orbit",
+            date: "January - Febuary 2024",
+            image: "https://class.coolsquad.xyz/u/1727655615.png",
+            video: "https://staffs-daforum-1.s3.eu-west-2.amazonaws.com/monthly_2024_02/1709211074.mp4.9e9d6ab8d4a54851da9df3a0d88b4bc9.mp4",
+            skills: ["Unity", "C#", "Github"],
+            briefDescription: "",
+            description: "",
+            githubLink: "https://github.com/JackRowe/CSforGameEngines"
+        },
+        {
+            name: "Flappy Circle",
+            date: "November 2023",
+            image: "https://class.coolsquad.xyz/u/1727624442.png",
+            video: "https://class.coolsquad.xyz/u/1727623851.mp4",
+            skills: ["C++", "Github"],
+            briefDescription: "",
+            description: "",
+            githubLink: "https://github.com/JackRowe/prog-fund-assessment-2"
+        },
+        
+        // Add more projects as needed
+    ];
 
-        gridContainer.innerHTML = ''; // Clear existing content
-
+    function createProjectFrames() {
         projects.forEach(project => {
             const frame = document.createElement('div');
             frame.className = 'frame';
@@ -177,30 +213,62 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="frame-content">
                     <div class="frame-name">${project.name}</div>
                     <div class="frame-date">${project.date}</div>
-                    <div class="frame-description">${project.description}</div>
                     <div class="frame-skills">
                         ${project.skills.map(skill => `<div class="skill">${skill}</div>`).join('')}
                     </div>
                 </div>
             `;
+            frame.addEventListener('click', () => openModal(project));
             gridContainer.appendChild(frame);
         });
     }
 
-    function adjustGridLayout() {
-        const gridContainer = document.querySelector('.grid-container');
-        const containerWidth = gridContainer.offsetWidth;
-        const frameWidth = 250; // Minimum width of each frame
-        const gap = 20; // Gap between frames
-        const columns = Math.max(1, Math.floor((containerWidth + gap) / (frameWidth + gap)));
-        gridContainer.style.gridTemplateColumns = `repeat(${columns}, minmax(${frameWidth}px, 1fr))`;
+    function openModal(project) {
+        const videoElement = document.getElementById('projectVideo');
+        videoElement.src = project.video;
+        videoElement.autoplay = true;
+        videoElement.loop = true;
+        videoElement.muted = true;
+        document.getElementById('modalProjectName').textContent = project.name;
+        document.getElementById('modalProjectDate').textContent = project.date;
+        document.getElementById('modalProjectDescription').textContent = project.description;
+        document.getElementById('modalProjectSkills').innerHTML = project.skills.map(skill => `<div class="skill">${skill}</div>`).join('');
+        
+        const githubLinkElement = document.getElementById('modalGithubLink');
+        if (project.githubLink) {
+            githubLinkElement.href = project.githubLink;
+            githubLinkElement.textContent = "View on GitHub";
+            githubLinkElement.style.display = "inline-block";
+        } else {
+            githubLinkElement.style.display = "none";
+            document.getElementById('noGithubMessage').style.display = "block";
+        }
+        
+        modal.style.display = 'block';
+        document.body.classList.add('modal-open');
     }
+
+    function closeModal() {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        const videoElement = document.getElementById('projectVideo');
+        videoElement.pause();
+        videoElement.currentTime = 0;
+        document.getElementById('noGithubMessage').style.display = "none";
+    }
+
+    closeBtn.onclick = closeModal;
+    window.onclick = (event) => {
+        if (event.target == modal) {
+            closeModal();
+        }
+    };
 
     // Initialize
     function init() {
         initCanvas();
         spawnNodes();
-        createFrameGrid();
+        createProjectFrames();
         animate();
     }
 
