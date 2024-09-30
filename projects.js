@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             date: "March - May 2024",
             image: "https://class.coolsquad.xyz/u/1727540135.png",
             video: "https://class.coolsquad.xyz/u/1727432173.mp4",
-            skills: ["C++", "OpenGL", "Github"],
+            skills: ["C++", "OpenGL", "Visual Studio", "Github"],
             briefDescription: "An advanced OpenGL renderer for complex 3D scenes.",
             description: "",
             githubLink: "https://github.com/JackRowe/OpenGL_Shooter"
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
             date: "March - May 2024",
             image: "https://class.coolsquad.xyz/u/1727540248.png",
             video: "https://class.coolsquad.xyz/u/1727433231.mp4",
-            skills: ["C++", "SDL2", "Evercade", "Github"],
+            skills: ["C++", "SDL2", "Evercade", "Visual Studio", "Github"],
             briefDescription: "A fully functional chess game using SDL2.",
             description: "",
             githubLink: "https://github.com/JackRowe/BespokePlatformDevelopment"
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             date: "January - Febuary 2024",
             image: "https://class.coolsquad.xyz/u/1727655615.png",
             video: "https://staffs-daforum-1.s3.eu-west-2.amazonaws.com/monthly_2024_02/1709211074.mp4.9e9d6ab8d4a54851da9df3a0d88b4bc9.mp4",
-            skills: ["Unity", "C#", "Github"],
+            skills: ["Unity", "C#", "Visual Studio", "Github"],
             briefDescription: "",
             description: "",
             githubLink: "https://github.com/JackRowe/CSforGameEngines"
@@ -195,9 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
             date: "November 2023",
             image: "https://class.coolsquad.xyz/u/1727624442.png",
             video: "https://class.coolsquad.xyz/u/1727623851.mp4",
-            skills: ["C++", "Github"],
-            briefDescription: "",
-            description: "",
+            skills: ["C++", "Visual Studio", "Github"],
+            description: "This project was an introductory experience in C++, Visual Studio, and Github. Throughout it, I built a simple yet engaging game called Flappy Circle, which draws inspiration from the classic Flappy Bird gameplay mechanics. The goal of the project was to not only familiarize myself with core programming concepts but also to implement practical game development skills such as object-oriented design, collision detection, and basic game physics. \n The development process involved using Visual Studio as the primary IDE to write and debug the C++ code. Through using Visual Studio's wide array of debugging tools, I was able to quickly identify and fix issues related to gameplay, such as detecting edge cases in collision handling and refining movement physics to create a more fluid user experience. \n Alongside C++, this project also introduced me to Github, which I utilised to manage any changes I made, or reverts needed. It also allowed me to keep a clear and concise project history. While not strictly necessary for a project of this scope and scale, it was a nice introduction to industry-standard software and practices. \n The game features a circular character controlled by the player, navigating through obstacles as they attempt to achieve a high score. I implemented a variety of basic game mechanics, such as gravity simulation, jump mechanics, and obstacle generation, which collectively emulate the classic 'flappy' gameplay. \n Through the development of Flappy Circle, I honed my understanding of C++ fundamentals, such as control structures, functions, and memory management. In addition, I learned how to break down a game development project into smaller, manageable components, and how to effectively test and debug each part to ensure smooth gameplay.",
             githubLink: "https://github.com/JackRowe/prog-fund-assessment-2"
         },
         
@@ -231,7 +230,11 @@ document.addEventListener('DOMContentLoaded', () => {
         videoElement.muted = true;
         document.getElementById('modalProjectName').textContent = project.name;
         document.getElementById('modalProjectDate').textContent = project.date;
-        document.getElementById('modalProjectDescription').textContent = project.description;
+        
+        // Split description by '. \n' to create paragraphs
+        const descriptionHTML = project.description.split('. \n').join('.</p><p>'); // Split and wrap in paragraph tags
+        document.getElementById('modalProjectDescription').innerHTML = `<p>${descriptionHTML}</p>`;
+        
         document.getElementById('modalProjectSkills').innerHTML = project.skills.map(skill => `<div class="skill">${skill}</div>`).join('');
         
         const githubLinkElement = document.getElementById('modalGithubLink');
@@ -246,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         modal.style.display = 'block';
         document.body.classList.add('modal-open');
-    }
+    }    
 
     function closeModal() {
         modal.style.display = 'none';
